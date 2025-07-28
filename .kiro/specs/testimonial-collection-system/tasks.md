@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - [x] 1. Set up project foundation and database schema
-  - Configure Supabase database with tables for users, projects, testimonials, and integrations
+  - Configure Supabase database with tables for users, projects, testimonials, and integrations using Drizzle.
   - Set up database migrations and seed data for development
   - Create TypeScript interfaces for all data models
   - _Requirements: 1.2, 9.1, 10.3_
