@@ -1,6 +1,9 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function OnboardingPage() {
   // Validate session on the server - this is the secure approach
@@ -9,8 +12,27 @@ export default async function OnboardingPage() {
   });
 
   // If no valid session, redirect to login
-  if (!session) {
+  if (!session?.user) {
     redirect("/login");
+  }
+
+  // Check onboarding status from database
+  try {
+    const dbUser = await db
+      .select({ onboardingCompleted: users.onboardingCompleted })
+      .from(users)
+      .where(eq(users.id, session.user.id))
+      .limit(1);
+
+    const onboardingCompleted = dbUser[0]?.onboardingCompleted ?? false;
+    
+    // If user has already completed onboarding, redirect to dashboard
+    if (onboardingCompleted) {
+      redirect("/dashboard");
+    }
+  } catch (error) {
+    console.error('Error checking onboarding status:', error);
+    // On error, allow them to stay on onboarding page
   }
 
   return (

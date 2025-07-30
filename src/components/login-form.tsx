@@ -27,12 +27,12 @@ export function LoginForm({
     setError("");
 
     const result = await signIn(email, password);
-    
     if (result.error) {
       setError(result.error);
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      // After successful login, redirect to dashboard
+      router.push('/dashboard');
     }
   };
 
@@ -55,7 +55,7 @@ export function LoginForm({
           Enter your email below to login to your account
         </p>
       </div>
-      
+
       {error && (
         <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
           {error}
@@ -65,13 +65,13 @@ export function LoginForm({
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            placeholder="m@example.com" 
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required 
+            required
           />
         </div>
         <div className="grid gap-3">
@@ -84,12 +84,12 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input 
-            id="password" 
-            type="password" 
+          <Input
+            id="password"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required 
+            required
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
@@ -107,9 +107,9 @@ export function LoginForm({
             Or continue with
           </span>
         </div>
-        <Button 
+        <Button
           type="button"
-          variant="outline" 
+          variant="outline"
           className="w-full"
           onClick={handleGoogleLogin}
         >

@@ -2,11 +2,13 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { authClient } from './auth-client';
+import type { User as DatabaseUser } from '@/db/types';
 
 interface User {
   id: string;
   email: string;
   name: string;
+  onboardingCompleted?: boolean;
   createdAt: Date;
 }
 

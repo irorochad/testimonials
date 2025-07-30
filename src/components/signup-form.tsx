@@ -28,12 +28,12 @@ export function SignupForm({
     setError("");
 
     const result = await signUp(email, password, name);
-    
+
     if (result.error) {
       setError(result.error);
       setLoading(false);
     } else {
-      router.push("/onboarding");
+      router.push("/dashboard");
     }
   };
 
@@ -41,7 +41,7 @@ export function SignupForm({
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/onboarding",
+        callbackURL: "/dashboard", 
       });
     } catch (error) {
       setError("Google signup failed");
@@ -56,7 +56,7 @@ export function SignupForm({
           Enter your details below to create your account
         </p>
       </div>
-      
+
       {error && (
         <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
           {error}
@@ -66,34 +66,34 @@ export function SignupForm({
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="name">Full Name</Label>
-          <Input 
-            id="name" 
-            type="text" 
-            placeholder="John Doe" 
+          <Input
+            id="name"
+            type="text"
+            placeholder="John Doe"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required 
+            required
           />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            placeholder="m@example.com" 
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required 
+            required
           />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="password">Password</Label>
-          <Input 
-            id="password" 
-            type="password" 
+          <Input
+            id="password"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required 
+            required
             minLength={6}
           />
           <p className="text-xs text-muted-foreground">
@@ -115,9 +115,9 @@ export function SignupForm({
             Or continue with
           </span>
         </div>
-        <Button 
+        <Button
           type="button"
-          variant="outline" 
+          variant="outline"
           className="w-full"
           onClick={handleGoogleSignup}
         >
