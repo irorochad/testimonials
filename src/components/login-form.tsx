@@ -93,7 +93,14 @@ export function LoginForm({
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Login"}
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Signing in...
+            </div>
+          ) : (
+            "Login"
+          )}
         </Button>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">

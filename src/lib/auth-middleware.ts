@@ -1,34 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from './auth';
+import { getSessionCookie } from 'better-auth/cookies';
 
 export async function authMiddleware(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
+    console.log('🔒 Middleware called for:', request.nextUrl.pathname);
+    
+    const sessionCookie = getSessionCookie(request);
+    console.log('🍪 Session cookie:', sessionCookie ? 'EXISTS' : 'NONE');
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
-                    request.nextUrl.pathname.startsWith('/signup');
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
-                          request.nextUrl.pathname.startsWith('/onboarding');
+    const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
+        request.nextUrl.pathname.startsWith('/signup');
+    const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
+        request.nextUrl.pathname.startsWith('/onboarding');
 
-  // Redirect authenticated users away from auth pages
-  if (session && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
+    console.log('📄 Page type:', { isAuthPage, isProtectedRoute });
 
-  // Redirect unauthenticated users to login
-  if (!session && isProtectedRoute) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
+    // Redirect users with session cookie away from auth pages (optimistic)
+    if (sessionCookie && isAuthPage) {
+        console.log('🔄 Redirecting user with session cookie away from auth page');
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
 
-  return NextResponse.next();
+    // Redirect users without session cookie to login (optimistic)
+    if (!sessionCookie && isProtectedRoute) {
+        console.log('🔄 Redirecting user without session cookie to login');
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    console.log('✅ Allowing request to proceed');
+    return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    '/onboarding/:path*',
-    '/login',
-    '/signup'
-  ]
+    matcher: [
+        '/dashboard/:path*',
+        '/onboarding/:path*',
+        '/login',
+        '/signup'
+    ]
 };

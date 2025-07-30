@@ -19,7 +19,7 @@ export const auth = betterAuth({
         minPasswordLength: 6,
     },
     session: {
-        expiresIn: 60 * 60 * 24 * 14, // 7 days
+        expiresIn: 60 * 60 * 24 * 14, // 14 days
         updateAge: 60 * 60 * 24, // 1 day
     },
     socialProviders: {

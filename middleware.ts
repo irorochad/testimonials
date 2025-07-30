@@ -5,7 +5,7 @@ export default authMiddleware;
 export const config = {
   matcher: [
     '/dashboard/:path*',
-    '/onboarding/:path*', 
+    '/onboarding/:path*',
     '/login',
     '/signup'
   ]

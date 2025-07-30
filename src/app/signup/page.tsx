@@ -1,7 +1,19 @@
 import { GalleryVerticalEnd } from "lucide-react";
 import { SignupForm } from "@/components/signup-form";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  // Check if user is already authenticated
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  // If already authenticated, redirect to dashboard
+  if (session) {
+    redirect("/dashboard");
+  }
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
