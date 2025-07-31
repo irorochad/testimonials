@@ -13,14 +13,14 @@
   - Create authentication context and hooks for client-side auth state
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 3. Create core project management functionality
+- [x] 3. Create core project management functionality
   - Implement project CRUD operations in API routes
   - Create project service layer with validation and business logic
   - Build project creation form with name, description, and settings
   - Generate unique embed codes for new projects
   - _Requirements: 1.1, 1.2, 1.3, 1.5_
 
-- [ ] 4. Build dashboard UI for project management
+- [x] 4. Build dashboard UI for project management
   - Create dashboard layout with navigation and project listing
   - Implement project statistics display (total testimonials, pending approvals)
   - Build onboarding flow for first-time users with website/brand info collection
@@ -48,14 +48,14 @@
   - Add bulk approval/rejection functionality
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 8. Create embeddable widget foundation
+- [x] 8. Create embeddable widget foundation
   - Build widget loader script with async loading
   - Implement Shadow DOM isolation for style protection
   - Create widget configuration API endpoint
   - Build responsive testimonial display component
   - _Requirements: 2.1, 2.3, 2.4, 2.5_
 
-- [ ] 9. Implement widget testimonial display and interaction
+- [x] 9. Implement widget testimonial display and interaction
   - Create testimonial carousel/grid layout with responsive design
   - Add "Add testimonial" button that opens collection modal
   - Implement widget customization options (colors, layout, branding)

@@ -54,13 +54,27 @@ export interface WidgetDisplaySettings {
   layout: 'carousel' | 'grid' | 'list';
   showRatings: boolean;
   showCompany: boolean;
+  showTitle: boolean;
   maxTestimonials: number;
+  widgetType: 'basic' | 'custom';
 }
 
 export interface WidgetConfig {
   projectId: string;
   displaySettings: WidgetDisplaySettings;
   customCSS?: string;
+  allowedDomains: string[];
+}
+
+export interface WidgetTestimonial {
+  id: string;
+  customerName: string;
+  customerCompany?: string;
+  customerTitle?: string;
+  content: string;
+  rating?: number;
+  tags?: string[];
+  createdAt: Date;
 }
 
 // API response types
