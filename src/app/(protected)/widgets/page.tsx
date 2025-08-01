@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { WIDGET_TEMPLATES } from '@/lib/widget-templates';
-import { COLOR_PRESETS, type WidgetSettings, type WidgetTemplate } from '@/types/widget';
+import { type WidgetSettings, type WidgetTemplate } from '@/types/widget';
 import { TemplateSelector } from '@/components/widgets/customization/TemplateSelector';
 import { CustomizationPanel } from '@/components/widgets/customization/CustomizationPanel';
 import { EmbedCodeSection } from '@/components/widgets/customization/EmbedCodeSection';
@@ -31,14 +31,7 @@ export default function WidgetCustomizationPage() {
         }));
     };
 
-    const applyColorPreset = (preset: typeof COLOR_PRESETS[number]) => {
-        setSettings(prev => ({
-            ...prev,
-            primaryColor: preset.primary,
-            backgroundColor: preset.background,
-            textColor: preset.text
-        }));
-    };
+
 
     const generateEmbedCode = () => {
         const code = `<script>
@@ -80,7 +73,6 @@ export default function WidgetCustomizationPage() {
                     <CustomizationPanel
                         settings={settings}
                         onSettingChange={handleSettingChange}
-                        onApplyColorPreset={applyColorPreset}
                     />
                 </div>
 

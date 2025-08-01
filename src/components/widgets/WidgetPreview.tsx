@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { WidgetTemplate, WidgetSettings } from '@/types/widget';
-import { generateWidgetCSS } from '@/lib/widget-templates';
+import { WidgetTemplate, WidgetSettings, getThemeColors } from '@/types/widget';
 
 interface WidgetPreviewProps {
     template: WidgetTemplate;
@@ -59,12 +58,15 @@ export function WidgetPreview({ template, settings }: WidgetPreviewProps) {
 
     const testimonials = MOCK_TESTIMONIALS.slice(0, settings.maxTestimonials);
 
+    // Get theme-based colors
+    const themeColors = getThemeColors(settings.theme);
+
     // Generate CSS variables for the widget
     const cssVariables = {
         '--primary-color': settings.primaryColor,
-        '--background-color': settings.backgroundColor,
-        '--text-color': settings.textColor,
-        '--border-color': settings.borderColor,
+        '--background-color': themeColors.backgroundColor,
+        '--text-color': themeColors.textColor,
+        '--border-color': themeColors.borderColor,
         '--border-radius': `${settings.borderRadius}px`,
         '--border-width': `${settings.borderWidth}px`,
         '--padding': `${settings.padding}px`,
@@ -180,12 +182,15 @@ function CleanCardPreview({ testimonials, settings, currentIndex, setCurrentInde
                     <img
                         src={current.avatar}
                         alt={current.customerName}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                        className="w-12 h-12 rounded-full object-cover border-2"
+                        style={{ borderColor: settings.primaryColor }}
                     />
                 )}
 
                 <div>
-                    <div className="font-semibold">{current.customerName}</div>
+                    <div className="font-semibold" style={{ color: settings.primaryColor }}>
+                        {current.customerName}
+                    </div>
                     {settings.showCompany && (current.customerTitle || current.customerCompany) && (
                         <div className="text-sm opacity-75">
                             {current.customerTitle}{current.customerTitle && current.customerCompany && ', '}{current.customerCompany}
@@ -215,7 +220,7 @@ function QuoteStylePreview({ testimonials, settings }: any) {
     const testimonial = testimonials[0];
 
     return (
-        <div className="widget-container text-center">
+        <div className="widget-container text-center" style={{ borderLeftColor: settings.primaryColor }}>
             <div className="text-6xl opacity-30 mb-4" style={{ color: settings.primaryColor }}>
                 "
             </div>
@@ -225,7 +230,9 @@ function QuoteStylePreview({ testimonials, settings }: any) {
             </blockquote>
 
             <div>
-                <div className="font-semibold">{testimonial.customerName}</div>
+                <div className="font-semibold" style={{ color: settings.primaryColor }}>
+                    {testimonial.customerName}
+                </div>
                 {settings.showCompany && (testimonial.customerTitle || testimonial.customerCompany) && (
                     <div className="text-sm opacity-75 mt-1">
                         {testimonial.customerTitle}{testimonial.customerTitle && testimonial.customerCompany && ', '}{testimonial.customerCompany}
@@ -248,7 +255,8 @@ function FeaturedHeroPreview({ testimonials, settings, currentIndex, setCurrentI
                     <img
                         src={current.avatar}
                         alt={current.customerName}
-                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 flex-shrink-0"
+                        className="w-16 h-16 rounded-full object-cover border-2 flex-shrink-0"
+                        style={{ borderColor: settings.primaryColor }}
                     />
                 )}
 
@@ -268,7 +276,9 @@ function FeaturedHeroPreview({ testimonials, settings, currentIndex, setCurrentI
                     </blockquote>
 
                     <div>
-                        <div className="font-semibold text-lg">{current.customerName}</div>
+                        <div className="font-semibold text-lg" style={{ color: settings.primaryColor }}>
+                            {current.customerName}
+                        </div>
                         {settings.showCompany && (current.customerTitle || current.customerCompany) && (
                             <div className="opacity-75 mt-1">
                                 {current.customerTitle}{current.customerTitle && current.customerCompany && ', '}{current.customerCompany}

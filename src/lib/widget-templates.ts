@@ -10,9 +10,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     category: 'card',
     defaultSettings: {
       primaryColor: '#3b82f6',
-      backgroundColor: '#ffffff',
-      textColor: '#374151',
-      borderColor: '#e5e7eb',
       fontFamily: 'system',
       fontSize: 16,
       fontWeight: 'normal',
@@ -28,7 +25,7 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
       maxTestimonials: 5,
       autoRotate: true,
       rotationInterval: 5,
-      theme: 'light',
+      theme: 'auto',
       shadow: 'md'
     }
   },
@@ -41,9 +38,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     category: 'quote',
     defaultSettings: {
       primaryColor: '#6366f1',
-      backgroundColor: '#f8fafc',
-      textColor: '#374151',
-      borderColor: '#6366f1',
       fontFamily: 'system',
       fontSize: 20,
       fontWeight: 'normal',
@@ -59,7 +53,7 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
       maxTestimonials: 1,
       autoRotate: false,
       rotationInterval: 5,
-      theme: 'light',
+      theme: 'auto',
       shadow: 'none'
     }
   },
@@ -67,14 +61,11 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     id: 'featured-hero',
     name: 'Featured Hero',
     description: 'Large format perfect for hero sections',
-    thumbnail: 'https://plus.unsplash.com/premium_photo-1752801716800-3d936e5e4a72?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    thumbnail: '/templates/featured-hero.png',
     component: 'FeaturedHeroWidget',
     category: 'hero',
     defaultSettings: {
       primaryColor: '#059669',
-      backgroundColor: '#ffffff',
-      textColor: '#374151',
-      borderColor: '#e5e7eb',
       fontFamily: 'system',
       fontSize: 18,
       fontWeight: 'medium',
@@ -90,7 +81,7 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
       maxTestimonials: 3,
       autoRotate: true,
       rotationInterval: 8,
-      theme: 'light',
+      theme: 'auto',
       shadow: 'lg'
     }
   },
@@ -103,9 +94,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     category: 'minimal',
     defaultSettings: {
       primaryColor: '#f59e0b',
-      backgroundColor: 'transparent',
-      textColor: '#374151',
-      borderColor: '#e5e7eb',
       fontFamily: 'system',
       fontSize: 14,
       fontWeight: 'normal',
@@ -121,7 +109,7 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
       maxTestimonials: 10,
       autoRotate: false,
       rotationInterval: 5,
-      theme: 'light',
+      theme: 'auto',
       shadow: 'none'
     }
   },
@@ -134,9 +122,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     category: 'minimal',
     defaultSettings: {
       primaryColor: '#dc2626',
-      backgroundColor: '#ffffff',
-      textColor: '#374151',
-      borderColor: '#e5e7eb',
       fontFamily: 'system',
       fontSize: 16,
       fontWeight: 'semibold',
@@ -152,7 +137,7 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
       maxTestimonials: 50,
       autoRotate: false,
       rotationInterval: 5,
-      theme: 'light',
+      theme: 'auto',
       shadow: 'sm'
     }
   }

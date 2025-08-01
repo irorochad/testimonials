@@ -173,11 +173,14 @@
     }
     
     generateCSSVariables(settings) {
+      // Get theme-based colors
+      const themeColors = this.getThemeColors(settings.theme || 'auto');
+      
       return {
         '--primary-color': settings.primaryColor || '#3b82f6',
-        '--background-color': settings.backgroundColor || '#ffffff',
-        '--text-color': settings.textColor || '#374151',
-        '--border-color': settings.borderColor || '#e5e7eb',
+        '--background-color': themeColors.backgroundColor,
+        '--text-color': themeColors.textColor,
+        '--border-color': themeColors.borderColor,
         '--border-radius': `${settings.borderRadius || 8}px`,
         '--border-width': `${settings.borderWidth || 1}px`,
         '--padding': `${settings.padding || 24}px`,
@@ -186,6 +189,16 @@
         '--font-weight': settings.fontWeight || 'normal',
         '--max-width': `${settings.maxWidth || 400}px`,
         '--shadow': this.getShadowValue(settings.shadow || 'md'),
+      };
+    }
+    
+    getThemeColors(theme) {
+      const isDark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      
+      return {
+        backgroundColor: isDark ? '#1f2937' : '#f9fafb', // gray-800 : gray-50
+        textColor: isDark ? '#f9fafb' : '#374151', // gray-50 : gray-700
+        borderColor: isDark ? '#374151' : '#e5e7eb', // gray-700 : gray-200
       };
     }
     
@@ -225,7 +238,7 @@
           ">
             ${settings.showRating !== false && testimonial.rating ? `
               <div style="margin-bottom: 16px; font-size: 18px;">
-                ${'★'.repeat(testimonial.rating)}<span style="color: #e5e7eb;">${'★'.repeat(5 - testimonial.rating)}</span>
+                <span style="color: var(--primary-color);">${'★'.repeat(testimonial.rating)}</span><span style="color: #e5e7eb;">${'★'.repeat(5 - testimonial.rating)}</span>
               </div>
             ` : ''}
             
@@ -244,12 +257,12 @@
                 <img 
                   src="${testimonial.avatar}" 
                   alt="${testimonial.customerName}"
-                  style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #f3f4f6;"
+                  style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color);"
                 />
               ` : ''}
               
               <div>
-                <div style="font-weight: 600; font-size: 15px;">${testimonial.customerName}</div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--primary-color);">${testimonial.customerName}</div>
                 ${settings.showCompany !== false && (testimonial.customerTitle || testimonial.customerCompany) ? `
                   <div style="font-size: 13px; color: #6B7280; margin-top: 2px;">
                     ${testimonial.customerTitle || ''}${testimonial.customerTitle && testimonial.customerCompany ? ', ' : ''}${testimonial.customerCompany || ''}

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy } from 'lucide-react';
-import { WidgetTemplate, WidgetSettings } from '@/types/widget';
+import { WidgetTemplate, WidgetSettings, getThemeColors } from '@/types/widget';
 import { WidgetPreview } from '@/components/widgets/WidgetPreview';
 import { toast } from 'sonner';
 
@@ -13,15 +13,18 @@ interface EmbedCodeSectionProps {
   embedCode: string;
 }
 
-export function EmbedCodeSection({ 
-  selectedTemplate, 
-  settings, 
-  embedCode 
+export function EmbedCodeSection({
+  selectedTemplate,
+  settings,
+  embedCode
 }: EmbedCodeSectionProps) {
   const copyEmbedCode = () => {
     navigator.clipboard.writeText(embedCode);
     toast.success('Embed code copied to clipboard!');
   };
+
+  // Get theme colors for preview background
+  const themeColors = getThemeColors(settings.theme);
 
   return (
     <div className="space-y-6">
@@ -33,7 +36,13 @@ export function EmbedCodeSection({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-lg p-4 bg-gray-50">
+          <div
+            className="border rounded-lg p-4"
+            style={{
+              backgroundColor: themeColors.backgroundColor,
+              borderColor: themeColors.borderColor
+            }}
+          >
             <WidgetPreview
               template={selectedTemplate}
               settings={settings}

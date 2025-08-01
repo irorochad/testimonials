@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings, Palette, Type, Layout } from 'lucide-react';
-import { COLOR_PRESETS, WidgetSettings } from '@/types/widget';
+import { WidgetSettings } from '@/types/widget';
 import { ColorCustomization } from './ColorCustomization';
 import { TypographyCustomization } from './TypographyCustomization';
 import { LayoutCustomization } from './LayoutCustomization';
@@ -11,13 +11,11 @@ import { LayoutCustomization } from './LayoutCustomization';
 interface CustomizationPanelProps {
   settings: WidgetSettings;
   onSettingChange: (key: keyof WidgetSettings, value: any) => void;
-  onApplyColorPreset: (preset: typeof COLOR_PRESETS[number]) => void;
 }
 
 export function CustomizationPanel({ 
   settings, 
-  onSettingChange, 
-  onApplyColorPreset 
+  onSettingChange
 }: CustomizationPanelProps) {
   return (
     <Card>
@@ -48,7 +46,6 @@ export function CustomizationPanel({
             <ColorCustomization
               settings={settings}
               onSettingChange={onSettingChange}
-              onApplyColorPreset={onApplyColorPreset}
             />
           </TabsContent>
 

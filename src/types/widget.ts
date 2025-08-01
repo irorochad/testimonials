@@ -13,9 +13,6 @@ export interface WidgetTemplate {
 export interface WidgetSettings {
   // Colors
   primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  borderColor: string;
   
   // Typography
   fontFamily: string;
@@ -43,6 +40,17 @@ export interface WidgetSettings {
   // Theme
   theme: 'light' | 'dark' | 'auto';
   shadow: 'none' | 'sm' | 'md' | 'lg';
+}
+
+// Helper function to get theme colors based on theme setting
+export function getThemeColors(theme: 'light' | 'dark' | 'auto') {
+  const isDark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  
+  return {
+    backgroundColor: isDark ? '#1f2937' : '#f9fafb', // gray-800 : gray-50
+    textColor: isDark ? '#f9fafb' : '#374151', // gray-50 : gray-700
+    borderColor: isDark ? '#374151' : '#e5e7eb', // gray-700 : gray-200
+  };
 }
 
 export interface WidgetConfig {
