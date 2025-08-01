@@ -4,8 +4,9 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
-import { users, projects, testimonials } from "@/db/schema"
+import { users } from "@/db/schema"
 import { eq } from "drizzle-orm"
+import { getUserTestimonials, getUserProject } from "@/lib/testimonials"
 
 export default async function TestimonialsPage() {
   // Validate session on the server
@@ -37,57 +38,17 @@ export default async function TestimonialsPage() {
     redirect("/onboarding");
   }
 
-  // Get user's project
-  let userProject = null;
-  try {
-    const project = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.userId, session.user.id))
-      .limit(1);
-
-    userProject = project[0] || null;
-  } catch (error) {
-    console.error('Error fetching user project:', error);
-  }
-
-  // Get testimonials for the user's project
-  let testimonialsData: any[] = [];
-  if (userProject) {
-    try {
-      // TEMPORARY: Using fake UUID to test empty state
-      const fakeProjectId = "00000000-0000-0000-0000-000000000000";
-
-      testimonialsData = await db
-        .select({
-          id: testimonials.id,
-          customerName: testimonials.customerName,
-          customerEmail: testimonials.customerEmail,
-          customerCompany: testimonials.customerCompany,
-          customerTitle: testimonials.customerTitle,
-          content: testimonials.content,
-          rating: testimonials.rating,
-          status: testimonials.status,
-          source: testimonials.source,
-          tags: testimonials.tags,
-          createdAt: testimonials.createdAt,
-          approvedAt: testimonials.approvedAt,
-        })
-        .from(testimonials)
-        .where(eq(testimonials.projectId, fakeProjectId)) // This will return no results
-        .orderBy(testimonials.createdAt);
-    } catch (error) {
-      console.error('Error fetching testimonials:', error);
-    }
-  }
+  // Get user's project and testimonials using shared utilities
+  const userProject = await getUserProject(session.user.id);
+  const testimonialsData = await getUserTestimonials(session.user.id);
 
 
   // Show empty state if no testimonials
   if (testimonialsData.length === 0) {
     return (
       <EmptyState
-        title="No testimonials found"
-        description="Testimonials you collect will show up here. Already got testimonials? Import them!"
+        title="😬 Oops! Nothing here 😬 "
+        description="You currently do not have any testimonials yet. Import or Request a few today!"
         actionLabel="Import testimonials"
       />
     )

@@ -67,6 +67,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import Link from "next/link"
 
 export interface TestimonialData {
   id: string
@@ -228,7 +229,12 @@ const createColumns = (setData: React.Dispatch<React.SetStateAction<TestimonialD
       const testimonial = row.original
       return (
         <div className="space-y-1">
-          <div className="font-medium">{testimonial.customerName}</div>
+          <Link 
+            href={`/testimonials/${testimonial.id}`}
+            className="font-medium text-primary hover:underline cursor-pointer"
+          >
+            {testimonial.customerName}
+          </Link>
           {testimonial.customerCompany && (
             <div className="text-sm text-muted-foreground">
               {testimonial.customerTitle && `${testimonial.customerTitle}, `}
