@@ -48,7 +48,7 @@
   - Add bulk approval/rejection functionality
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [x] 8. Create embeddable widget foundation
+- [ ] 8. Create embeddable widget foundation
   - Build widget loader script with async loading
   - Implement Shadow DOM isolation for style protection
   - Create widget configuration API endpoint
