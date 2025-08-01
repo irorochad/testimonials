@@ -46,6 +46,11 @@ const data = {
       icon: IconDashboard,
     },
     {
+      title: "Testimonials",
+      url: "/testimonials",
+      icon: IconUsers,
+    },
+    {
       title: "Widget",
       url: "/widgets",
       icon: IconInnerShadowTop,

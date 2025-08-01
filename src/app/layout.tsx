@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/lib/auth-context";
+import { Toaster } from "@/components/ui/sonner"
+ 
 
 
 
@@ -41,11 +43,14 @@ export default function RootLayout({
           <AuthProvider>
             <div className="flex flex-1 flex-col">
               <div className="@container/main flex flex-1 flex-col gap-2">
+             
                 {children}
+                
               </div>
             </div>
           </AuthProvider>
         </ThemeProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
