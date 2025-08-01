@@ -4,7 +4,6 @@ export interface WidgetTemplate {
   id: string;
   name: string;
   description: string;
-  thumbnail: string;
   component: string;
   category: 'card' | 'quote' | 'hero' | 'minimal';
   defaultSettings: WidgetSettings;

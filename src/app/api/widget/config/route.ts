@@ -32,10 +32,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify domain matches project's allowed domain
-    if (domain) {
+    if (domain && project[0].websiteUrl) {
       const projectDomain = new URL(project[0].websiteUrl).hostname;
       const requestDomain = domain.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-      
+
       if (projectDomain !== requestDomain) {
         return NextResponse.json(
           { error: 'Domain not authorized for this widget' },

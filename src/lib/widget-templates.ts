@@ -5,7 +5,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     id: 'clean-card',
     name: 'Clean Card',
     description: 'Simple card layout with avatar and company info',
-    thumbnail: '/templates/clean-card.png',
     component: 'CleanCardWidget',
     category: 'card',
     defaultSettings: {
@@ -33,7 +32,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     id: 'quote-style',
     name: 'Quote Style',
     description: 'Large quote with minimal design',
-    thumbnail: '/templates/quote-style.png',
     component: 'QuoteStyleWidget',
     category: 'quote',
     defaultSettings: {
@@ -61,7 +59,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     id: 'featured-hero',
     name: 'Featured Hero',
     description: 'Large format perfect for hero sections',
-    thumbnail: '/templates/featured-hero.png',
     component: 'FeaturedHeroWidget',
     category: 'hero',
     defaultSettings: {
@@ -89,7 +86,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     id: 'minimal-list',
     name: 'Minimal List',
     description: 'Simple list format for sidebars',
-    thumbnail: '/templates/minimal-list.png',
     component: 'MinimalListWidget',
     category: 'minimal',
     defaultSettings: {
@@ -117,7 +113,6 @@ export const WIDGET_TEMPLATES: WidgetTemplate[] = [
     id: 'rating-badge',
     name: 'Rating Badge',
     description: 'Compact rating display with count',
-    thumbnail: '/templates/rating-badge.png',
     component: 'RatingBadgeWidget',
     category: 'minimal',
     defaultSettings: {
