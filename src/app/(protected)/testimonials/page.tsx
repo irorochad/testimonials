@@ -1,4 +1,4 @@
-import { TestimonialsTable } from "@/components/testimonials/testimonials-table"
+import { TestimonialsView } from "@/components/testimonials/testimonials-view"
 import { EmptyState } from "@/components/empty-state"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
@@ -71,7 +71,7 @@ export default async function TestimonialsPage() {
         </div>
       </div>
 
-      <TestimonialsTable
+      <TestimonialsView
         data={testimonialsData}
         projectId={userProject?.id || null}
       />

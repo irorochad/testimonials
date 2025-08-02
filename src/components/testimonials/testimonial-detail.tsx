@@ -30,13 +30,12 @@ interface TestimonialDetailProps {
     customerEmail: string
     customerCompany: string | null
     customerTitle: string | null
+    customerImageUrl: string | null
     content: string
     rating: number | null
     status: string
     source: string
     sourceMetadata: any
-    moderationScore: string | null
-    moderationFlags: any
     tags: string[] | null
     createdAt: Date
     approvedAt: Date | null
@@ -50,22 +49,22 @@ function StatusBadge({ status }: { status: string }) {
   const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
       case 'approved':
-        return { 
+        return {
           className: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
           icon: IconCheck
         }
       case 'rejected':
-        return { 
+        return {
           className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
           icon: IconX
         }
       case 'flagged':
-        return { 
+        return {
           className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
           icon: IconFlag
         }
       default: // pending
-        return { 
+        return {
           className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
           icon: IconCalendar
         }
@@ -166,7 +165,7 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
           error: `Failed to ${newStatus} testimonial`,
         }
       )
-      
+
       // Update local state
       setTestimonial(prev => ({
         ...prev,
@@ -179,214 +178,155 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
   }
 
   return (
-    <div className="px-4 lg:px-6 space-y-6">
-      {/* Back button */}
+    <div className="min-h-screen flex items-center justify-center p-4">
+      {/* Back button - positioned absolutely, lower to avoid header conflict */}
+
       <Button
-        variant="ghost"
         onClick={() => router.push('/testimonials')}
-        className="flex items-center gap-2"
+        className="absolute top-34 left-6  btnSecondary"
       >
-        <IconArrowLeft className="w-4 h-4" />
         Back to Testimonials
       </Button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Testimonial content */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <CardTitle className="text-xl">Testimonial Content</CardTitle>
-                <div className="flex items-center gap-2">
-                  <StatusBadge status={testimonial.status} />
-                  <SourceBadge source={testimonial.source} />
-                </div>
+      {/* Single Beautiful Card */}
+      <Card
+        className="w-full max-w-2xl border border-white/20 backdrop-blur-md bg-white/10 dark:bg-black/10 shadow-2xl dark:bg-none"
+        
+      >
+        <CardContent className="p-8">
+          {/* Header with customer info and status */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center gap-4">
+              {/* Customer Image */}
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-muted flex-shrink-0">
+                {testimonial.customerImageUrl ? (
+                  <img
+                    src={testimonial.customerImageUrl}
+                    alt={testimonial.customerName}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                      const parent = e.currentTarget.parentElement
+                      if (parent) {
+                        parent.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-lg">${testimonial.customerName.charAt(0).toUpperCase()}</div>`
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-lg">
+                    {testimonial.customerName.charAt(0).toUpperCase()}
+                  </div>
+                )}
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Rating */}
-              {testimonial.rating && (
-                <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-2">Rating</h4>
-                  <RatingDisplay rating={testimonial.rating} />
-                </div>
-              )}
 
-              {/* Content */}
+              {/* Customer Details */}
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-2">Testimonial</h4>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <blockquote className="text-lg leading-relaxed italic">
-                    "{testimonial.content}"
-                  </blockquote>
-                </div>
-              </div>
-
-              {/* Tags */}
-              {testimonial.tags && testimonial.tags.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-2">Tags</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {testimonial.tags.map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                        <IconTag className="w-3 h-3" />
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Customer information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Customer Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3">
-                  <IconUser className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Name</p>
-                    <p className="font-medium">{testimonial.customerName}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <IconMail className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium">{testimonial.customerEmail}</p>
-                  </div>
-                </div>
-
-                {testimonial.customerCompany && (
-                  <div className="flex items-center gap-3">
-                    <IconBuilding className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Company</p>
-                      <p className="font-medium">{testimonial.customerCompany}</p>
-                    </div>
+                <h2 className="text-xl font-bold">{testimonial.customerName}</h2>
+                {(testimonial.customerTitle || testimonial.customerCompany) && (
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <IconUser className="w-4 h-4" />
+                    <span>
+                      {testimonial.customerTitle}
+                      {testimonial.customerTitle && testimonial.customerCompany && ' at '}
+                      {testimonial.customerCompany}
+                    </span>
                   </div>
                 )}
-
-                {testimonial.customerTitle && (
-                  <div className="flex items-center gap-3">
-                    <IconUser className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Title</p>
-                      <p className="font-medium">{testimonial.customerTitle}</p>
-                    </div>
-                  </div>
-                )}
+                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                  <IconMail className="w-4 h-4" />
+                  <span>{testimonial.customerEmail}</span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
+            {/* Status and Source */}
+            <div className="flex flex-col items-end gap-2">
+              <StatusBadge status={testimonial.status} />
+              <SourceBadge source={testimonial.source} />
+            </div>
+          </div>
+
+          {/* Rating */}
+          {testimonial.rating && (
+            <div className="mb-6 flex justify-center">
+              <RatingDisplay rating={testimonial.rating} />
+            </div>
+          )}
+
+          {/* Testimonial Content */}
+          <div className="mb-6">
+            <blockquote className="text-lg leading-relaxed italic text-center py-4">
+              "{testimonial.content}"
+            </blockquote>
+          </div>
+
+          {/* Tags */}
+          {testimonial.tags && testimonial.tags.length > 0 && (
+            <div className="mb-6">
+              <div className="flex flex-wrap gap-2 justify-center">
+                {testimonial.tags.map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    <IconTag className="w-3 h-3" />
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button
-                onClick={() => handleStatusUpdate('approved')}
-                disabled={testimonial.status === 'approved'}
-                className="w-full flex items-center gap-2"
-                variant={testimonial.status === 'approved' ? 'secondary' : 'default'}
-              >
-                <IconCheck className="w-4 h-4" />
-                {testimonial.status === 'approved' ? 'Approved' : 'Approve'}
-              </Button>
+          <div className="flex flex-wrap gap-3 justify-center mb-6">
+            <Button
+              onClick={() => handleStatusUpdate('approved')}
+              disabled={testimonial.status === 'approved'}
+              className="flex items-center gap-2 btnSecondary"
+            >
+              <IconCheck className="w-4 h-4" />
+              {testimonial.status === 'approved' ? 'Approved' : 'Approve'}
+            </Button>
 
-              <Button
-                onClick={() => handleStatusUpdate('rejected')}
-                disabled={testimonial.status === 'rejected'}
-                className="w-full flex items-center gap-2"
-                variant={testimonial.status === 'rejected' ? 'secondary' : 'destructive'}
-              >
-                <IconX className="w-4 h-4" />
-                {testimonial.status === 'rejected' ? 'Rejected' : 'Reject'}
-              </Button>
+            <Button
+              onClick={() => handleStatusUpdate('rejected')}
+              disabled={testimonial.status === 'rejected'}
+              className="flex items-center gap-2 cursor-pointer"
+              variant={testimonial.status === 'rejected' ? 'secondary' : 'destructive'}
+            >
+              <IconX className="w-4 h-4" />
+              {testimonial.status === 'rejected' ? 'Rejected' : 'Reject'}
+            </Button>
 
-              <Button
-                onClick={() => handleStatusUpdate('flagged')}
-                disabled={testimonial.status === 'flagged'}
-                className="w-full flex items-center gap-2"
-                variant={testimonial.status === 'flagged' ? 'secondary' : 'outline'}
-              >
-                <IconFlag className="w-4 h-4" />
-                {testimonial.status === 'flagged' ? 'Flagged' : 'Flag'}
-              </Button>
+            <Button
+              onClick={() => handleStatusUpdate('flagged')}
+              disabled={testimonial.status === 'flagged'}
+              className="flex items-center gap-2 cursor-pointer"
+              variant={testimonial.status === 'flagged' ? 'secondary' : 'outline'}
+            >
+              <IconFlag className="w-4 h-4" />
+              {testimonial.status === 'flagged' ? 'Flagged' : 'Flag'}
+            </Button>
+          </div>
 
-              <Separator />
-
-              <Button
-                onClick={() => setIsEditing(!isEditing)}
-                className="w-full flex items-center gap-2"
-                variant="outline"
-              >
-                <IconEdit className="w-4 h-4" />
-                {isEditing ? 'Cancel Edit' : 'Edit'}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Metadata */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Metadata</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          {/* Footer with metadata */}
+          <div className="flex items-center justify-between text-sm text-muted-foreground pt-4 border-t border-white/10">
+            <div>
+              Created: {new Date(testimonial.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </div>
+            {testimonial.approvedAt && (
               <div>
-                <p className="text-sm text-muted-foreground">Created</p>
-                <p className="font-medium">
-                  {new Date(testimonial.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </p>
+                Approved: {new Date(testimonial.approvedAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
               </div>
-
-              {testimonial.approvedAt && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Approved</p>
-                  <p className="font-medium">
-                    {new Date(testimonial.approvedAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <p className="text-sm text-muted-foreground">Source</p>
-                <SourceBadge source={testimonial.source} />
-              </div>
-
-              {testimonial.moderationScore && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Moderation Score</p>
-                  <p className="font-medium">{testimonial.moderationScore}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

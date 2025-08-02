@@ -117,7 +117,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .btnSecondary {
+    @apply bg-black text-white font-bold cursor-pointer hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105;
   }
 }

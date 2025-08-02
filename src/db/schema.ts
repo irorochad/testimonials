@@ -38,13 +38,12 @@ export const testimonials = pgTable('testimonials', {
   customerEmail: varchar('customer_email', { length: 255 }).notNull(),
   customerCompany: varchar('customer_company', { length: 255 }),
   customerTitle: varchar('customer_title', { length: 255 }),
+  customerImageUrl: varchar('customer_image_url', { length: 500 }),
   content: text('content').notNull(),
   rating: integer('rating'), // 1-5 rating
   status: varchar('status', { length: 20 }).default('pending').notNull(),
   source: varchar('source', { length: 20 }).notNull(),
-  sourceMetadata: jsonb('source_metadata'),
-  moderationScore: decimal('moderation_score', { precision: 3, scale: 2 }),
-  moderationFlags: jsonb('moderation_flags'),
+  sourceMetadata: jsonb('source_metadata'), // URL to original review for scraped content
   tags: jsonb('tags'), // AI-generated tags for contextual display
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   approvedAt: timestamp('approved_at', { withTimezone: true }),

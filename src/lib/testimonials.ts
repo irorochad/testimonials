@@ -8,13 +8,12 @@ export interface TestimonialWithProject {
   customerEmail: string
   customerCompany: string | null
   customerTitle: string | null
+  customerImageUrl: string | null
   content: string
   rating: number | null
   status: string
   source: string
   sourceMetadata: any
-  moderationScore: string | null
-  moderationFlags: any
   tags: string[] | null
   createdAt: Date
   approvedAt: Date | null
@@ -44,13 +43,12 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
         customerEmail: testimonials.customerEmail,
         customerCompany: testimonials.customerCompany,
         customerTitle: testimonials.customerTitle,
+        customerImageUrl: testimonials.customerImageUrl,
         content: testimonials.content,
         rating: testimonials.rating,
         status: testimonials.status,
         source: testimonials.source,
         sourceMetadata: testimonials.sourceMetadata,
-        moderationScore: testimonials.moderationScore,
-        moderationFlags: testimonials.moderationFlags,
         tags: testimonials.tags,
         createdAt: testimonials.createdAt,
         approvedAt: testimonials.approvedAt,
@@ -65,8 +63,7 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
     return result.map(item => ({
       ...item,
       tags: item.tags as string[] | null,
-      sourceMetadata: item.sourceMetadata as any,
-      moderationFlags: item.moderationFlags as any
+      sourceMetadata: item.sourceMetadata as any
     }));
   } catch (error) {
     console.error('Error fetching testimonials:', error);
@@ -84,13 +81,12 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
         customerEmail: testimonials.customerEmail,
         customerCompany: testimonials.customerCompany,
         customerTitle: testimonials.customerTitle,
+        customerImageUrl: testimonials.customerImageUrl,
         content: testimonials.content,
         rating: testimonials.rating,
         status: testimonials.status,
         source: testimonials.source,
         sourceMetadata: testimonials.sourceMetadata,
-        moderationScore: testimonials.moderationScore,
-        moderationFlags: testimonials.moderationFlags,
         tags: testimonials.tags,
         createdAt: testimonials.createdAt,
         approvedAt: testimonials.approvedAt,
@@ -113,8 +109,7 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
     return {
       ...testimonial,
       tags: testimonial.tags as string[] | null,
-      sourceMetadata: testimonial.sourceMetadata as any,
-      moderationFlags: testimonial.moderationFlags as any
+      sourceMetadata: testimonial.sourceMetadata as any
     };
   } catch (error) {
     // console.error('Error fetching testimonial:', error);

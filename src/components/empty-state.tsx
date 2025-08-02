@@ -63,7 +63,7 @@ export function EmptyState({
                                 console.log('Import testimonials clicked')
                             }
                         }}
-                        className="bg-black text-white cursor-pointer hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+                        className="btnSecondary"
                     >
                         {actionLabel}
                     </Button>

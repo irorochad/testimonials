@@ -71,6 +71,7 @@ export interface WidgetTestimonial {
   customerName: string;
   customerCompany?: string;
   customerTitle?: string;
+  customerImageUrl?: string;
   content: string;
   rating?: number;
   tags?: string[];
@@ -83,6 +84,7 @@ export interface PublicTestimonial {
   customerName: string;
   customerCompany?: string;
   customerTitle?: string;
+  customerImageUrl?: string;
   content: string;
   rating?: number;
   createdAt: Date;
@@ -93,6 +95,7 @@ export interface TestimonialSubmission {
   customerEmail: string;
   customerCompany?: string;
   customerTitle?: string;
+  customerImageUrl?: string;
   content: string;
   rating?: number;
   source: 'manual' | 'email_invite' | 'scraped' | 'integration' | 'imported';

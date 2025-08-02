@@ -75,6 +75,7 @@ export interface TestimonialData {
   customerEmail: string
   customerCompany: string | null
   customerTitle: string | null
+  customerImageUrl: string | null
   content: string
   rating: number | null
   status: string
@@ -228,19 +229,45 @@ const createColumns = (setData: React.Dispatch<React.SetStateAction<TestimonialD
     cell: ({ row }) => {
       const testimonial = row.original
       return (
-        <div className="space-y-1">
-          <Link 
-            href={`/testimonials/${testimonial.id}`}
-            className="font-medium text-primary hover:underline cursor-pointer"
-          >
-            {testimonial.customerName}
-          </Link>
-          {testimonial.customerCompany && (
-            <div className="text-sm text-muted-foreground">
-              {testimonial.customerTitle && `${testimonial.customerTitle}, `}
-              {testimonial.customerCompany}
-            </div>
-          )}
+        <div className="flex items-center gap-3">
+          {/* Customer Image */}
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0">
+            {testimonial.customerImageUrl ? (
+              <img 
+                src={testimonial.customerImageUrl} 
+                alt={testimonial.customerName}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Hide image and show initials fallback
+                  e.currentTarget.style.display = 'none'
+                  const parent = e.currentTarget.parentElement
+                  if (parent) {
+                    parent.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">${testimonial.customerName.charAt(0).toUpperCase()}</div>`
+                  }
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                {testimonial.customerName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+          
+          {/* Customer Info */}
+          <div className="space-y-1 min-w-0 flex-1">
+            <Link 
+              href={`/testimonials/${testimonial.id}`}
+              className="font-medium text-primary hover:underline cursor-pointer block truncate"
+            >
+              {testimonial.customerName}
+            </Link>
+            {testimonial.customerCompany && (
+              <div className="text-sm text-muted-foreground truncate">
+                {testimonial.customerTitle && `${testimonial.customerTitle}, `}
+                {testimonial.customerCompany}
+              </div>
+            )}
+          </div>
         </div>
       )
     },
