@@ -24,6 +24,19 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+interface Group {
+    id: string
+    name: string
+    color: string
+}
 
 interface TestimonialCardProps {
     testimonial: {
@@ -44,7 +57,9 @@ interface TestimonialCardProps {
         groupName: string | null
         groupColor: string | null
     }
+    groups?: Group[]
     onStatusUpdate?: (id: string, status: string) => void
+    onGroupUpdate?: (id: string, groupId: string | null, groupName: string | null, groupColor: string | null) => void
 }
 
 // Status badge component
@@ -129,7 +144,29 @@ async function updateTestimonialStatus(id: string, status: string) {
     }
 }
 
-export function TestimonialCard({ testimonial, onStatusUpdate }: TestimonialCardProps) {
+// Update testimonial group function
+async function updateTestimonialGroup(id: string, groupId: string | null) {
+    try {
+        const response = await fetch(`/api/testimonials/${id}/group`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ groupId }),
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to update group')
+        }
+
+        return await response.json()
+    } catch (error) {
+        console.error('Error updating testimonial group:', error)
+        throw error
+    }
+}
+
+export function TestimonialCard({ testimonial, groups, onStatusUpdate, onGroupUpdate }: TestimonialCardProps) {
     const [isHovered, setIsHovered] = useState(false)
 
     const handleStatusUpdate = async (newStatus: string) => {
@@ -146,6 +183,34 @@ export function TestimonialCard({ testimonial, onStatusUpdate }: TestimonialCard
             // Call the parent callback to update the data
             if (onStatusUpdate) {
                 onStatusUpdate(testimonial.id, newStatus)
+            }
+        } catch (error) {
+            // Error is already handled by toast.promise
+        }
+    }
+
+    const handleGroupUpdate = async (groupId: string | null) => {
+        try {
+            await toast.promise(
+                updateTestimonialGroup(testimonial.id, groupId),
+                {
+                    loading: 'Updating group...',
+                    success: 'Group updated!',
+                    error: 'Failed to update group',
+                }
+            )
+
+            // Find the selected group details
+            const selectedGroup = groupId ? groups?.find(g => g.id === groupId) : null
+            
+            // Call the parent callback to update the data
+            if (onGroupUpdate) {
+                onGroupUpdate(
+                    testimonial.id, 
+                    groupId, 
+                    selectedGroup?.name || null, 
+                    selectedGroup?.color || null
+                )
             }
         } catch (error) {
             // Error is already handled by toast.promise
@@ -249,19 +314,52 @@ export function TestimonialCard({ testimonial, onStatusUpdate }: TestimonialCard
 
                 {/* Status and Group - Separate row */}
                 <div className="flex justify-between items-center mb-4">
-                    {/* Group Badge */}
-                    <div className="flex-shrink-0">
-                        {testimonial.groupName ? (
-                            <Badge 
-                                variant="outline" 
-                                className="text-xs"
-                                style={{ 
-                                    borderColor: testimonial.groupColor || '#3B82F6',
-                                    color: testimonial.groupColor || '#3B82F6'
+                    {/* Group Dropdown */}
+                    <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                        {groups && groups.length > 0 ? (
+                            <Select
+                                value={testimonial.groupId || "uncategorized"}
+                                onValueChange={(value) => {
+                                    const groupId = value === "uncategorized" ? null : value
+                                    handleGroupUpdate(groupId)
                                 }}
                             >
-                                {testimonial.groupName}
-                            </Badge>
+                                <SelectTrigger className="h-6 text-xs border-none bg-transparent p-1 hover:bg-muted/50 transition-colors">
+                                    <SelectValue>
+                                        {testimonial.groupName ? (
+                                            <div className="flex items-center gap-1">
+                                                <div 
+                                                    className="w-2 h-2 rounded-full" 
+                                                    style={{ backgroundColor: testimonial.groupColor || '#3B82F6' }}
+                                                />
+                                                <span style={{ color: testimonial.groupColor || '#3B82F6' }}>
+                                                    {testimonial.groupName}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-muted-foreground">Uncategorized</span>
+                                        )}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="uncategorized">
+                                        <span className="text-muted-foreground">Uncategorized</span>
+                                    </SelectItem>
+                                    {groups.map((group) => (
+                                        <SelectItem key={group.id} value={group.id}>
+                                            <div className="flex items-center gap-2">
+                                                <div 
+                                                    className="w-3 h-3 rounded-full" 
+                                                    style={{ backgroundColor: group.color }}
+                                                />
+                                                <span style={{ color: group.color }}>
+                                                    {group.name}
+                                                </span>
+                                            </div>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         ) : (
                             <Badge variant="outline" className="text-xs text-muted-foreground">
                                 Uncategorized

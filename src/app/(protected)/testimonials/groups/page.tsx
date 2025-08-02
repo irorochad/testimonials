@@ -2,8 +2,8 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
-import { users, groups } from "@/db/schema"
-import { eq } from "drizzle-orm"
+import { users, groups, testimonials } from "@/db/schema"
+import { eq, count } from "drizzle-orm"
 import { getUserProject } from "@/lib/testimonials"
 import { GroupsView } from "@/components/testimonials/groups-view"
 
@@ -44,17 +44,29 @@ export default async function GroupsPage() {
         redirect("/onboarding");
     }
 
-    // Get groups for this project
+    // Get groups for this project with testimonial counts
     const projectGroups = await db
-        .select()
+        .select({
+            id: groups.id,
+            projectId: groups.projectId,
+            name: groups.name,
+            description: groups.description,
+            color: groups.color,
+            createdAt: groups.createdAt,
+            updatedAt: groups.updatedAt,
+            testimonialCount: count(testimonials.id),
+        })
         .from(groups)
+        .leftJoin(testimonials, eq(groups.id, testimonials.groupId))
         .where(eq(groups.projectId, userProject.id))
+        .groupBy(groups.id)
         .orderBy(groups.createdAt);
 
-    // Transform groups to ensure color is never null
+    // Transform groups to ensure color is never null and add testimonial count
     const transformedGroups = projectGroups.map(group => ({
         ...group,
-        color: group.color || '#3B82F6' // Provide default color if null
+        color: group.color || '#3B82F6', // Provide default color if null
+        testimonialCount: group.testimonialCount || 0
     }));
 
     return (

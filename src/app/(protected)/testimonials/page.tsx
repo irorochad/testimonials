@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
-import { users } from "@/db/schema"
+import { users, groups } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { getUserTestimonials, getUserProject } from "@/lib/testimonials"
 
@@ -42,6 +42,25 @@ export default async function TestimonialsPage() {
   const userProject = await getUserProject(session.user.id);
   const testimonialsData = await getUserTestimonials(session.user.id);
 
+  // Get groups for this project
+  let projectGroups: Array<{ id: string; name: string; color: string }> = [];
+  if (userProject) {
+    const groupsData = await db
+      .select({
+        id: groups.id,
+        name: groups.name,
+        color: groups.color,
+      })
+      .from(groups)
+      .where(eq(groups.projectId, userProject.id))
+      .orderBy(groups.createdAt);
+
+    // Transform groups to ensure color is never null
+    projectGroups = groupsData.map(group => ({
+      ...group,
+      color: group.color || '#3B82F6' // Provide default color if null
+    }));
+  }
 
   // Show empty state if no testimonials
   if (testimonialsData.length === 0) {
@@ -73,6 +92,7 @@ export default async function TestimonialsPage() {
 
       <TestimonialsView
         data={testimonialsData}
+        groups={projectGroups}
         projectId={userProject?.id || null}
       />
     </div>

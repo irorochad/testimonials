@@ -28,14 +28,21 @@ import { TestimonialsGrid } from "./testimonials-grid"
 import { TestimonialsTableSimple } from "./testimonials-table-simple"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
+interface Group {
+  id: string
+  name: string
+  color: string
+}
+
 interface TestimonialsViewProps {
   data: TestimonialWithProjectAndGroup[]
+  groups?: Group[]
   projectId: string | null
 }
 
 type ViewMode = 'cards' | 'table'
 
-export function TestimonialsView({ data: initialData, projectId }: TestimonialsViewProps) {
+export function TestimonialsView({ data: initialData, groups, projectId }: TestimonialsViewProps) {
   const [data, setData] = React.useState(() => initialData)
   const [viewMode, setViewMode] = React.useState<ViewMode>('cards')
   const [searchTerm, setSearchTerm] = React.useState('')
@@ -79,6 +86,17 @@ export function TestimonialsView({ data: initialData, projectId }: TestimonialsV
       prevData.map(item =>
         item.id === id
           ? { ...item, status: newStatus, approvedAt: newStatus === 'approved' ? new Date() : null }
+          : item
+      )
+    )
+  }
+
+  // Handle group updates from cards/table
+  const handleGroupUpdate = (id: string, groupId: string | null, groupName: string | null, groupColor: string | null) => {
+    setData(prevData =>
+      prevData.map(item =>
+        item.id === id
+          ? { ...item, groupId, groupName, groupColor }
           : item
       )
     )
@@ -205,7 +223,9 @@ export function TestimonialsView({ data: initialData, projectId }: TestimonialsV
       {viewMode === 'cards' ? (
         <TestimonialsGrid
           data={filteredData}
+          groups={groups}
           onStatusUpdate={handleStatusUpdate}
+          onGroupUpdate={handleGroupUpdate}
         />
       ) : (
         <TestimonialsTableSimple

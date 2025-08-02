@@ -33,6 +33,7 @@ interface Group {
     color: string
     createdAt: Date
     updatedAt: Date
+    testimonialCount: number
 }
 
 interface GroupsViewProps {
@@ -45,11 +46,35 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [editingGroup, setEditingGroup] = useState<Group | null>(null)
+    const [isCreating, setIsCreating] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         color: '#3B82F6'
     })
+
+    // Helper function to determine if text should be white or black based on background color
+    const getTextColor = (hexColor: string) => {
+        // Convert hex to RGB
+        const r = parseInt(hexColor.slice(1, 3), 16)
+        const g = parseInt(hexColor.slice(3, 5), 16)
+        const b = parseInt(hexColor.slice(5, 7), 16)
+
+        // Calculate luminance
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+
+        // Return white for dark colors, black for light colors
+        return luminance > 0.5 ? '#000000' : '#ffffff'
+    }
+
+    // Helper function to get a lighter version of the color for better readability
+    const getLighterColor = (hexColor: string, opacity: number = 0.1) => {
+        const r = parseInt(hexColor.slice(1, 3), 16)
+        const g = parseInt(hexColor.slice(3, 5), 16)
+        const b = parseInt(hexColor.slice(5, 7), 16)
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`
+    }
 
     const resetForm = () => {
         setFormData({
@@ -65,6 +90,9 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
             return
         }
 
+        if (isCreating) return // Prevent double-clicks
+
+        setIsCreating(true)
         try {
             const response = await fetch('/api/groups', {
                 method: 'POST',
@@ -90,6 +118,8 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
             toast.success('Group created successfully!')
         } catch (error) {
             toast.error('Failed to create group')
+        } finally {
+            setIsCreating(false)
         }
     }
 
@@ -99,6 +129,9 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
             return
         }
 
+        if (isEditing) return // Prevent double-clicks
+
+        setIsEditing(true)
         try {
             const response = await fetch(`/api/groups/${editingGroup.id}`, {
                 method: 'PATCH',
@@ -124,6 +157,8 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
             toast.success('Group updated successfully!')
         } catch (error) {
             toast.error('Failed to update group')
+        } finally {
+            setIsEditing(false)
         }
     }
 
@@ -200,55 +235,85 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-6">
-                    {groups.map((group) => (
-                        <Card key={group.id} className="relative group hover:shadow-lg transition-all duration-200">
-                            <CardHeader className="pb-3">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-2">
+                    {groups.map((group) => {
+                        const textColor = getTextColor(group.color)
+                        const isLightBackground = textColor === '#000000'
+
+                        return (
+                            <Card
+                                key={group.id}
+                                className="relative group hover:shadow-lg transition-all duration-200 border-0"
+                                style={{
+                                    backgroundColor: group.color,
+                                    color: textColor
+                                }}
+                            >
+                                <CardHeader className="pb-3">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-white/30"
+                                                style={{
+                                                    backgroundColor: isLightBackground ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)'
+                                                }}
+                                            />
+                                            <CardTitle
+                                                className="text-lg truncate"
+                                                style={{ color: textColor }}
+                                            >
+                                                {group.name}
+                                            </CardTitle>
+                                        </div>
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => openEditDialog(group)}
+                                                className="h-8 w-8 p-0 cursor-pointer hover:bg-white/20"
+                                                style={{ color: textColor }}
+                                            >
+                                                <IconEdit className="w-4 h-4" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleDeleteGroup(group.id)}
+                                                className="h-8 w-8 p-0 cursor-pointer hover:bg-red-500/20"
+                                                style={{ color: textColor }}
+                                            >
+                                                <IconTrash className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    {group.description && (
+                                        <p
+                                            className="text-sm mb-3 line-clamp-2 opacity-80"
+                                            style={{ color: textColor }}
+                                        >
+                                            {group.description}
+                                        </p>
+                                    )}
+                                    <div className="flex items-center justify-between">
                                         <div
-                                            className="w-4 h-4 rounded-full flex-shrink-0"
-                                            style={{ backgroundColor: group.color }}
-                                        />
-                                        <CardTitle className="text-lg truncate">{group.name}</CardTitle>
-                                    </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => openEditDialog(group)}
-                                            className="h-8 w-8 p-0 cursor-pointer"
+                                            className="flex items-center gap-1 text-sm opacity-75"
+                                            style={{ color: textColor }}
                                         >
-                                            <IconEdit className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => handleDeleteGroup(group.id)}
-                                            className="h-8 w-8 p-0 cursor-pointer text-destructive hover:text-destructive"
+                                            <IconUsers className="w-4 h-4" />
+                                            <span>{group.testimonialCount} testimonial{group.testimonialCount !== 1 ? 's' : ''}</span>
+                                        </div>
+                                        <div
+                                            className="text-xs opacity-60"
+                                            style={{ color: textColor }}
                                         >
-                                            <IconTrash className="w-4 h-4" />
-                                        </Button>
+                                            Created {new Date(group.createdAt).toLocaleDateString()}
+                                        </div>
                                     </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                {group.description && (
-                                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                                        {group.description}
-                                    </p>
-                                )}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                        <IconUsers className="w-4 h-4" />
-                                        <span>0 testimonials</span>
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                        Created {new Date(group.createdAt).toLocaleDateString()}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                                </CardContent>
+                            </Card>
+                        )
+                    })}
                 </div>
             )}
 
@@ -269,6 +334,7 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                                 value={formData.name}
                                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                                 placeholder="Enter group name..."
+                                className="border-none "
                             />
                         </div>
                         <div>
@@ -278,6 +344,7 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                                 value={formData.description}
                                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                 placeholder="Enter group description..."
+                                className="border-none "
                             />
                         </div>
                         <div>
@@ -294,17 +361,38 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                                     value={formData.color}
                                     onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
                                     placeholder="#3B82F6"
-                                    className="flex-1"
+                                    className="flex-1 "
+
                                 />
                             </div>
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsCreateDialogOpen(false)}
+                            disabled={isCreating}
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={handleCreateGroup} className="btn-primary">
-                            Create Group
+                        <Button
+                            onClick={handleCreateGroup}
+                            disabled={isCreating}
+                            style={{
+                                backgroundColor: formData.color,
+                                borderColor: formData.color,
+                                color: '#ffffff'
+                            }}
+                            className="hover:opacity-90 transition-opacity"
+                        >
+                            {isCreating ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                    Creating...
+                                </>
+                            ) : (
+                                'Create Group'
+                            )}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -358,11 +446,31 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsEditDialogOpen(false)}
+                            disabled={isEditing}
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={handleEditGroup} className="btn-primary">
-                            Update Group
+                        <Button
+                            onClick={handleEditGroup}
+                            disabled={isEditing}
+                            style={{
+                                backgroundColor: formData.color,
+                                borderColor: formData.color,
+                                color: '#ffffff'
+                            }}
+                            className="hover:opacity-90 transition-opacity"
+                        >
+                            {isEditing ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                    Updating...
+                                </>
+                            ) : (
+                                'Update Group'
+                            )}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

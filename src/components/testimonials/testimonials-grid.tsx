@@ -4,12 +4,20 @@ import * as React from "react"
 import { TestimonialCard } from "./testimonial-card"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
-interface TestimonialsGridProps {
-  data: TestimonialWithProjectAndGroup[]
-  onStatusUpdate: (id: string, status: string) => void
+interface Group {
+  id: string
+  name: string
+  color: string
 }
 
-export function TestimonialsGrid({ data, onStatusUpdate }: TestimonialsGridProps) {
+interface TestimonialsGridProps {
+  data: TestimonialWithProjectAndGroup[]
+  groups?: Group[]
+  onStatusUpdate: (id: string, status: string) => void
+  onGroupUpdate?: (id: string, groupId: string | null, groupName: string | null, groupColor: string | null) => void
+}
+
+export function TestimonialsGrid({ data, groups, onStatusUpdate, onGroupUpdate }: TestimonialsGridProps) {
   if (data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4">
@@ -32,7 +40,9 @@ export function TestimonialsGrid({ data, onStatusUpdate }: TestimonialsGridProps
           <TestimonialCard
             key={testimonial.id}
             testimonial={testimonial}
+            groups={groups}
             onStatusUpdate={onStatusUpdate}
+            onGroupUpdate={onGroupUpdate}
           />
         ))}
       </div>
