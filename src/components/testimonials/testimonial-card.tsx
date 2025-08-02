@@ -40,6 +40,9 @@ interface TestimonialCardProps {
         tags: string[] | null
         createdAt: Date
         approvedAt: Date | null
+        groupId: string | null
+        groupName: string | null
+        groupColor: string | null
     }
     onStatusUpdate?: (id: string, status: string) => void
 }
@@ -244,8 +247,29 @@ export function TestimonialCard({ testimonial, onStatusUpdate }: TestimonialCard
                     </div>
                 </div>
 
-                {/* Status Badge - Separate row */}
-                <div className="flex justify-end mb-4">
+                {/* Status and Group - Separate row */}
+                <div className="flex justify-between items-center mb-4">
+                    {/* Group Badge */}
+                    <div className="flex-shrink-0">
+                        {testimonial.groupName ? (
+                            <Badge 
+                                variant="outline" 
+                                className="text-xs"
+                                style={{ 
+                                    borderColor: testimonial.groupColor || '#3B82F6',
+                                    color: testimonial.groupColor || '#3B82F6'
+                                }}
+                            >
+                                {testimonial.groupName}
+                            </Badge>
+                        ) : (
+                            <Badge variant="outline" className="text-xs text-muted-foreground">
+                                Uncategorized
+                            </Badge>
+                        )}
+                    </div>
+                    
+                    {/* Status Badge */}
                     <StatusBadge status={testimonial.status} />
                 </div>
 

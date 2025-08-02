@@ -1,8 +1,9 @@
 import { db } from "@/db"
-import { projects, testimonials } from "@/db/schema"
+import { projects, testimonials, groups } from "@/db/schema"
 import { eq, and } from "drizzle-orm"
 
-export interface TestimonialWithProject {
+// Extended testimonial type with project and group info for UI components
+export interface TestimonialWithProjectAndGroup {
   id: string
   customerName: string
   customerEmail: string
@@ -19,10 +20,13 @@ export interface TestimonialWithProject {
   approvedAt: Date | null
   projectId: string
   projectName: string
+  groupId: string | null
+  groupName: string | null
+  groupColor: string | null
 }
 
 // Get all testimonials for a user's project
-export async function getUserTestimonials(userId: string): Promise<TestimonialWithProject[]> {
+export async function getUserTestimonials(userId: string): Promise<TestimonialWithProjectAndGroup[]> {
   try {
     // Get user's project first
     const userProject = await db
@@ -54,10 +58,14 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
         approvedAt: testimonials.approvedAt,
         projectId: testimonials.projectId,
         projectName: projects.name,
+        groupId: testimonials.groupId,
+        groupName: groups.name,
+        groupColor: groups.color,
       })
       .from(testimonials)
       .innerJoin(projects, eq(testimonials.projectId, projects.id))
-      .where(eq(testimonials.projectId, projects.id))
+      .leftJoin(groups, eq(testimonials.groupId, groups.id))
+      .where(eq(testimonials.projectId, userProject[0].id))
       .orderBy(testimonials.createdAt);
 
     return result.map(item => ({
@@ -72,7 +80,7 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
 }
 
 // Get a single testimonial by ID for a user
-export async function getUserTestimonial(userId: string, testimonialId: string): Promise<TestimonialWithProject | null> {
+export async function getUserTestimonial(userId: string, testimonialId: string): Promise<TestimonialWithProjectAndGroup | null> {
   try {
     const result = await db
       .select({
@@ -92,9 +100,13 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
         approvedAt: testimonials.approvedAt,
         projectId: testimonials.projectId,
         projectName: projects.name,
+        groupId: testimonials.groupId,
+        groupName: groups.name,
+        groupColor: groups.color,
       })
       .from(testimonials)
       .innerJoin(projects, eq(testimonials.projectId, projects.id))
+      .leftJoin(groups, eq(testimonials.groupId, groups.id))
       .where(
         and(
           eq(testimonials.id, testimonialId),

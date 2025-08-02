@@ -45,25 +45,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link"
-
-interface TestimonialData {
-  id: string
-  customerName: string
-  customerEmail: string
-  customerCompany: string | null
-  customerTitle: string | null
-  customerImageUrl: string | null
-  content: string
-  rating: number | null
-  status: string
-  source: string
-  tags: string[] | null
-  createdAt: Date
-  approvedAt: Date | null
-}
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface TestimonialsTableSimpleProps {
-  data: TestimonialData[]
+  data: TestimonialWithProjectAndGroup[]
   onStatusUpdate: (id: string, status: string) => void
 }
 
@@ -178,7 +163,7 @@ async function updateTestimonialStatus(id: string, status: string) {
 }
 
 // Create columns function
-const createColumns = (onStatusUpdate: (id: string, status: string) => void): ColumnDef<TestimonialData>[] => [
+const createColumns = (onStatusUpdate: (id: string, status: string) => void): ColumnDef<TestimonialWithProjectAndGroup>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -215,8 +200,8 @@ const createColumns = (onStatusUpdate: (id: string, status: string) => void): Co
           {/* Customer Image */}
           <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0">
             {testimonial.customerImageUrl ? (
-              <img 
-                src={testimonial.customerImageUrl} 
+              <img
+                src={testimonial.customerImageUrl}
                 alt={testimonial.customerName}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -233,10 +218,10 @@ const createColumns = (onStatusUpdate: (id: string, status: string) => void): Co
               </div>
             )}
           </div>
-          
+
           {/* Customer Info */}
           <div className="space-y-1 min-w-0 flex-1">
-            <Link 
+            <Link
               href={`/testimonials/${testimonial.id}`}
               className="font-medium text-primary hover:underline cursor-pointer block truncate"
             >
@@ -291,6 +276,29 @@ const createColumns = (onStatusUpdate: (id: string, status: string) => void): Co
     accessorKey: "source",
     header: "Source",
     cell: ({ row }) => <SourceBadge source={row.original.source} />,
+  },
+  {
+    accessorKey: "groupName",
+    header: "Group",
+    cell: ({ row }) => {
+      const testimonial = row.original
+      if (!testimonial.groupName) {
+        return <Badge variant="outline" className="text-xs text-muted-foreground">Uncategorized</Badge>
+      }
+
+      return (
+        <Badge 
+          variant="outline" 
+          className="text-xs"
+          style={{ 
+            borderColor: testimonial.groupColor || '#3B82F6',
+            color: testimonial.groupColor || '#3B82F6'
+          }}
+        >
+          {testimonial.groupName}
+        </Badge>
+      )
+    },
   },
   {
     accessorKey: "tags",

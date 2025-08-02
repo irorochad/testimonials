@@ -30,10 +30,22 @@ export const projects = pgTable('projects', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Groups table
+export const groups = pgTable('groups', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  color: varchar('color', { length: 7 }).default('#3B82F6'), // Hex color for visual distinction
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Testimonials table
 export const testimonials = pgTable('testimonials', {
   id: uuid('id').primaryKey().defaultRandom(),
   projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  groupId: uuid('group_id').references(() => groups.id, { onDelete: 'set null' }), // Allow null for uncategorized
   customerName: varchar('customer_name', { length: 255 }).notNull(),
   customerEmail: varchar('customer_email', { length: 255 }).notNull(),
   customerCompany: varchar('customer_company', { length: 255 }),
@@ -139,14 +151,27 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
     references: [users.id],
   }),
   testimonials: many(testimonials),
+  groups: many(groups),
   integrations: many(integrations),
   invitations: many(invitations),
+}));
+
+export const groupsRelations = relations(groups, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [groups.projectId],
+    references: [projects.id],
+  }),
+  testimonials: many(testimonials),
 }));
 
 export const testimonialsRelations = relations(testimonials, ({ one }) => ({
   project: one(projects, {
     fields: [testimonials.projectId],
     references: [projects.id],
+  }),
+  group: one(groups, {
+    fields: [testimonials.groupId],
+    references: [groups.id],
   }),
 }));
 

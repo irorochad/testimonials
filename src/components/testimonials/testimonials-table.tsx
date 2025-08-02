@@ -68,22 +68,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link"
-
-export interface TestimonialData {
-  id: string
-  customerName: string
-  customerEmail: string
-  customerCompany: string | null
-  customerTitle: string | null
-  customerImageUrl: string | null
-  content: string
-  rating: number | null
-  status: string
-  source: string
-  tags: string[] | null
-  createdAt: Date
-  approvedAt: Date | null
-}
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 // Status badge component
 function StatusBadge({ status }: { status: string }) {
@@ -196,7 +181,7 @@ async function updateTestimonialStatus(id: string, status: string) {
 }
 
 // Create columns function to avoid hooks issues
-const createColumns = (setData: React.Dispatch<React.SetStateAction<TestimonialData[]>>): ColumnDef<TestimonialData>[] => [
+const createColumns = (setData: React.Dispatch<React.SetStateAction<TestimonialWithProjectAndGroup[]>>): ColumnDef<TestimonialWithProjectAndGroup>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -233,8 +218,8 @@ const createColumns = (setData: React.Dispatch<React.SetStateAction<TestimonialD
           {/* Customer Image */}
           <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0">
             {testimonial.customerImageUrl ? (
-              <img 
-                src={testimonial.customerImageUrl} 
+              <img
+                src={testimonial.customerImageUrl}
                 alt={testimonial.customerName}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -252,10 +237,10 @@ const createColumns = (setData: React.Dispatch<React.SetStateAction<TestimonialD
               </div>
             )}
           </div>
-          
+
           {/* Customer Info */}
           <div className="space-y-1 min-w-0 flex-1">
-            <Link 
+            <Link
               href={`/testimonials/${testimonial.id}`}
               className="font-medium text-primary hover:underline cursor-pointer block truncate"
             >
@@ -479,7 +464,7 @@ export function TestimonialsTable({
   data: initialData,
   projectId
 }: {
-  data: TestimonialData[]
+  data: TestimonialWithProjectAndGroup[]
   projectId: string | null
 }) {
   const [data, setData] = React.useState(() => initialData)

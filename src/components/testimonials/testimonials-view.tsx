@@ -26,25 +26,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { TestimonialsGrid } from "./testimonials-grid"
 import { TestimonialsTableSimple } from "./testimonials-table-simple"
-
-interface TestimonialData {
-  id: string
-  customerName: string
-  customerEmail: string
-  customerCompany: string | null
-  customerTitle: string | null
-  customerImageUrl: string | null
-  content: string
-  rating: number | null
-  status: string
-  source: string
-  tags: string[] | null
-  createdAt: Date
-  approvedAt: Date | null
-}
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface TestimonialsViewProps {
-  data: TestimonialData[]
+  data: TestimonialWithProjectAndGroup[]
   projectId: string | null
 }
 

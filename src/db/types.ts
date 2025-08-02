@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import type { users, projects, testimonials, integrations, invitations, subscriptions } from './schema';
+import type { users, projects, groups, testimonials, integrations, invitations, subscriptions } from './schema';
 
 // User types
 export type User = InferSelectModel<typeof users>;
@@ -8,6 +8,10 @@ export type NewUser = InferInsertModel<typeof users>;
 // Project types
 export type Project = InferSelectModel<typeof projects>;
 export type NewProject = InferInsertModel<typeof projects>;
+
+// Group types
+export type Group = InferSelectModel<typeof groups>;
+export type NewGroup = InferInsertModel<typeof groups>;
 
 // Testimonial types
 export type Testimonial = InferSelectModel<typeof testimonials>;
@@ -44,6 +48,21 @@ export interface TestimonialWithProject extends Testimonial {
   project: {
     name: string;
     embedCode: string;
+  };
+}
+
+export interface GroupWithStats extends Group {
+  testimonialCount: number;
+  approvedCount: number;
+  pendingCount: number;
+  averageRating: number | null;
+}
+
+export interface TestimonialWithGroup extends Testimonial {
+  group?: {
+    id: string;
+    name: string;
+    color: string;
   };
 }
 

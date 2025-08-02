@@ -41,6 +41,9 @@ interface TestimonialDetailProps {
     approvedAt: Date | null
     projectId: string
     projectName: string
+    groupId: string | null
+    groupName: string | null
+    groupColor: string | null
   }
 }
 

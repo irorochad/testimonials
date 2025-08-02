@@ -2,25 +2,10 @@
 
 import * as React from "react"
 import { TestimonialCard } from "./testimonial-card"
-
-interface TestimonialData {
-  id: string
-  customerName: string
-  customerEmail: string
-  customerCompany: string | null
-  customerTitle: string | null
-  customerImageUrl: string | null
-  content: string
-  rating: number | null
-  status: string
-  source: string
-  tags: string[] | null
-  createdAt: Date
-  approvedAt: Date | null
-}
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface TestimonialsGridProps {
-  data: TestimonialData[]
+  data: TestimonialWithProjectAndGroup[]
   onStatusUpdate: (id: string, status: string) => void
 }
 
