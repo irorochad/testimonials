@@ -82,10 +82,10 @@ export function ExportDropdown({
     }
 
     const csvContent = generateCSV(testimonials)
-    const filename = groupName 
+    const filename = groupName
       ? `testimonials-${groupName.toLowerCase().replace(/\s+/g, '-')}.csv`
       : 'testimonials.csv'
-    
+
     downloadFile(csvContent, filename, 'text/csv')
     toast.success('CSV downloaded successfully!')
   }
@@ -107,7 +107,7 @@ export function ExportDropdown({
 
     // Get the first testimonial to access project info
     const firstTestimonial = testimonials[0]
-    
+
     // Check if public sharing is enabled
     if (!firstTestimonial.projectIsPublic || !firstTestimonial.projectPublicSlug) {
       toast.info('Enable public sharing in Settings first')
@@ -118,7 +118,7 @@ export function ExportDropdown({
     // Generate public URL
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
     const publicUrl = `${baseUrl}/p/${firstTestimonial.projectPublicSlug}`
-    
+
     // Copy URL to clipboard and show success message
     navigator.clipboard.writeText(publicUrl)
     toast.success('Public URL copied to clipboard!')
@@ -129,8 +129,8 @@ export function ExportDropdown({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           {children || (
-            <Button 
-              variant={triggerVariant} 
+            <Button
+              variant={triggerVariant}
               size={triggerSize}
               className={triggerClassName}
             >
