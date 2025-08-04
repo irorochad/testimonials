@@ -29,6 +29,20 @@ export type NewInvitation = InferInsertModel<typeof invitations>;
 export type Subscription = InferSelectModel<typeof subscriptions>;
 export type NewSubscription = InferInsertModel<typeof subscriptions>;
 
+// Public page settings interface
+export interface PublicPageSettings {
+  theme: 'light' | 'dark' | 'auto';
+  primaryColor: string;
+  layout: 'grid' | 'masonry' | 'list';
+  showRatings: boolean;
+  showCompany: boolean;
+  showTitle: boolean;
+  showImages: boolean;
+  headerTitle?: string;
+  headerDescription?: string;
+  customCSS?: string;
+}
+
 // Extended types with business logic
 export interface UserWithSubscription extends User {
   subscription?: {

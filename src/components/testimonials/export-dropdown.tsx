@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { WidgetBuilder } from "./widget-builder"
+import { PublicShareModal } from "./public-share-modal"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface ExportDropdownProps {
@@ -32,6 +33,7 @@ export function ExportDropdown({
   children
 }: ExportDropdownProps) {
   const [isWidgetBuilderOpen, setIsWidgetBuilderOpen] = useState(false)
+  const [isPublicShareOpen, setIsPublicShareOpen] = useState(false)
 
   // Generate CSV content
   const generateCSV = (data: TestimonialWithProjectAndGroup[]) => {
@@ -100,8 +102,12 @@ export function ExportDropdown({
   }
 
   const handleSharePublic = () => {
-    // Placeholder for public sharing functionality
-    toast.info('Public sharing feature coming soon!')
+    if (testimonials.length === 0) {
+      toast.error('No testimonials to export')
+      return
+    }
+
+    setIsPublicShareOpen(true)
   }
 
   return (
@@ -142,6 +148,13 @@ export function ExportDropdown({
         testimonials={testimonials}
         selectedTestimonials={testimonials}
         groupName={groupName}
+      />
+
+      {/* Public Share Modal */}
+      <PublicShareModal
+        isOpen={isPublicShareOpen}
+        onClose={() => setIsPublicShareOpen(false)}
+        projectName={testimonials[0]?.projectName || 'Project'}
       />
     </>
   )

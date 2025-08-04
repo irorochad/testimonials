@@ -23,6 +23,9 @@ export const projects = pgTable('projects', {
   brandName: varchar('brand_name', { length: 255 }),
   socialLinks: jsonb('social_links'),
   embedCode: varchar('embed_code', { length: 50 }).notNull().unique(),
+  publicSlug: varchar('public_slug', { length: 100 }).unique(), // For public URLs like /p/company-name
+  isPublic: boolean('is_public').default(false).notNull(), // Toggle for public visibility
+  publicPageSettings: jsonb('public_page_settings').default('{}').notNull(), // Theme, layout, etc.
   productFeatures: jsonb('product_features'), // For AI prompt generation
   contextTags: jsonb('context_tags'), // For contextual testimonial display
   settings: jsonb('settings').default('{}').notNull(),
@@ -54,6 +57,7 @@ export const testimonials = pgTable('testimonials', {
   content: text('content').notNull(),
   rating: integer('rating'), // 1-5 rating
   status: varchar('status', { length: 20 }).default('pending').notNull(),
+  isPublic: boolean('is_public').default(true).notNull(), // Individual testimonials public by default
   source: varchar('source', { length: 20 }).notNull(),
   sourceMetadata: jsonb('source_metadata'), // URL to original review for scraped content
   tags: jsonb('tags'), // AI-generated tags for contextual display

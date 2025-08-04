@@ -13,6 +13,7 @@ export interface TestimonialWithProjectAndGroup {
   content: string
   rating: number | null
   status: string
+  isPublic: boolean
   source: string
   sourceMetadata: any
   tags: string[] | null
@@ -20,6 +21,8 @@ export interface TestimonialWithProjectAndGroup {
   approvedAt: Date | null
   projectId: string
   projectName: string
+  projectPublicSlug: string | null
+  projectIsPublic: boolean
   groupId: string | null
   groupName: string | null
   groupColor: string | null
@@ -51,6 +54,7 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
         content: testimonials.content,
         rating: testimonials.rating,
         status: testimonials.status,
+        isPublic: testimonials.isPublic,
         source: testimonials.source,
         sourceMetadata: testimonials.sourceMetadata,
         tags: testimonials.tags,
@@ -58,6 +62,8 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
         approvedAt: testimonials.approvedAt,
         projectId: testimonials.projectId,
         projectName: projects.name,
+        projectPublicSlug: projects.publicSlug,
+        projectIsPublic: projects.isPublic,
         groupId: testimonials.groupId,
         groupName: groups.name,
         groupColor: groups.color,
@@ -93,6 +99,7 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
         content: testimonials.content,
         rating: testimonials.rating,
         status: testimonials.status,
+        isPublic: testimonials.isPublic,
         source: testimonials.source,
         sourceMetadata: testimonials.sourceMetadata,
         tags: testimonials.tags,
@@ -100,6 +107,8 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
         approvedAt: testimonials.approvedAt,
         projectId: testimonials.projectId,
         projectName: projects.name,
+        projectPublicSlug: projects.publicSlug,
+        projectIsPublic: projects.isPublic,
         groupId: testimonials.groupId,
         groupName: groups.name,
         groupColor: groups.color,

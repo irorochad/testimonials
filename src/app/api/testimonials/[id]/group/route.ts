@@ -65,7 +65,7 @@ export async function PATCH(
 
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: 'Invalid input', details: error.errors },
+                { error: 'Invalid input', details: error.message },
                 { status: 400 }
             )
         }
