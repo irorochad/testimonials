@@ -3,26 +3,21 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
-  IconArrowLeft,
   IconCheck,
   IconX,
   IconFlag,
-  IconEdit,
   IconStar,
   IconStarFilled,
   IconCalendar,
   IconUser,
-  IconBuilding,
   IconMail,
   IconTag,
-  IconCode,
 } from "@tabler/icons-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Card, CardContent } from "@/components/ui/card"
 import { ExportDropdown } from "./export-dropdown"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
@@ -138,12 +133,11 @@ async function updateTestimonialStatus(id: string, status: string) {
 
 export function TestimonialDetail({ testimonial: initialTestimonial }: TestimonialDetailProps) {
   const [testimonial, setTestimonial] = useState(initialTestimonial)
-  const [isEditing, setIsEditing] = useState(false)
   const router = useRouter()
 
   const handleStatusUpdate = async (newStatus: string) => {
     try {
-      await toast.promise(
+      const result = await toast.promise(
         updateTestimonialStatus(testimonial.id, newStatus),
         {
           loading: `${newStatus === 'approved' ? 'Approving' : newStatus === 'rejected' ? 'Rejecting' : 'Flagging'} testimonial...`,
@@ -152,12 +146,14 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
         }
       )
 
-      // Update local state
-      setTestimonial(prev => ({
-        ...prev,
-        status: newStatus,
-        approvedAt: newStatus === 'approved' ? new Date() : null
-      }))
+      // Update local state only if the API call was successful
+      if (result) {
+        setTestimonial(prev => ({
+          ...prev,
+          status: newStatus,
+          approvedAt: newStatus === 'approved' ? new Date() : null
+        }))
+      }
     } catch (error) {
       // Error is already handled by toast.promise
     }

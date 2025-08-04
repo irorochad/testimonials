@@ -99,32 +99,29 @@ export function ExportDropdown({
     setIsWidgetBuilderOpen(true)
   }
 
-  const handleSharePublic = async () => {
+  const handleSharePublic = () => {
     if (testimonials.length === 0) {
       toast.error('No testimonials to export')
       return
     }
 
+    // Get the first testimonial to access project info
+    const firstTestimonial = testimonials[0]
+    
     // Check if public sharing is enabled
-    try {
-      const response = await fetch('/api/projects/public-settings')
-      if (response.ok) {
-        const data = await response.json()
-        if (data.isPublic && data.publicUrl) {
-          // Copy URL to clipboard and show success message
-          navigator.clipboard.writeText(data.publicUrl)
-          toast.success('Public URL copied to clipboard!')
-        } else {
-          // Direct user to settings
-          toast.info('Enable public sharing in Settings first')
-          window.location.href = '/settings?tab=public-sharing'
-        }
-      } else {
-        toast.error('Failed to check public sharing status')
-      }
-    } catch (error) {
-      toast.error('Failed to check public sharing status')
+    if (!firstTestimonial.projectIsPublic || !firstTestimonial.projectPublicSlug) {
+      toast.info('Enable public sharing in Settings first')
+      window.location.href = '/settings?tab=public-sharing'
+      return
     }
+
+    // Generate public URL
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
+    const publicUrl = `${baseUrl}/p/${firstTestimonial.projectPublicSlug}`
+    
+    // Copy URL to clipboard and show success message
+    navigator.clipboard.writeText(publicUrl)
+    toast.success('Public URL copied to clipboard!')
   }
 
   return (

@@ -31,7 +31,7 @@ async function isSlugAvailable(slug: string, projectId?: string): Promise<boolea
   return existing.length === 0
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth.api.getSession({
       headers: await headers()
