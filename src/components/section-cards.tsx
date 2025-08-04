@@ -1,6 +1,4 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
-
-import { Badge } from "@/components/ui/badge"
+import { IconUsers, IconFolder, IconStar, IconClock } from "@tabler/icons-react"
 import {
   Card,
   CardAction,
@@ -10,91 +8,104 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function SectionCards() {
+interface DashboardStats {
+  totalTestimonials: number
+  totalApproved: number
+  totalGroups: number
+  averageRating: number
+  recentTestimonials: number
+  approvalRate: number
+}
+
+interface SectionCardsProps {
+  stats: DashboardStats
+}
+
+export function SectionCards({ stats }: SectionCardsProps) {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Total Testimonials</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
+            {stats.totalTestimonials}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <IconUsers className="h-5 w-5 text-primary" />
+            </div>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
+            {stats.totalApproved} approved testimonials
           </div>
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            {stats.approvalRate.toFixed(1)}% approval rate
           </div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>Testimonial Groups</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
+            {stats.totalGroups}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
-            </Badge>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <IconFolder className="h-5 w-5 text-primary" />
+            </div>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
+            Organized collections
           </div>
           <div className="text-muted-foreground">
-            Acquisition needs attention
+            {stats.totalGroups === 0 ? 'Create groups to organize testimonials' : 'Helping organize your testimonials'}
           </div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>Average Rating</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
+            {stats.averageRating > 0 ? stats.averageRating.toFixed(1) : '0.0'}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <IconStar className="h-5 w-5 text-primary" />
+            </div>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+            {stats.averageRating >= 4.5 ? 'Excellent ratings' : stats.averageRating >= 4.0 ? 'Great ratings' : stats.averageRating >= 3.0 ? 'Good ratings' : stats.averageRating > 0 ? 'Building reputation' : 'No ratings yet'}
           </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
+          <div className="text-muted-foreground">
+            From {stats.totalApproved} approved testimonials
+          </div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Recent Activity</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            {stats.recentTestimonials}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
-            </Badge>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <IconClock className="h-5 w-5 text-primary" />
+            </div>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+            {stats.recentTestimonials === 0 ? 'No recent activity' : `${stats.recentTestimonials} new this month`}
           </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
+          <div className="text-muted-foreground">
+            Last 30 days activity
+          </div>
         </CardFooter>
       </Card>
     </div>

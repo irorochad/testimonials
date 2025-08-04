@@ -75,16 +75,18 @@ export default async function TestimonialsPage() {
 
   // Show table with testimonials
   return (
-    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+    <div className="flex flex-col gap-6 py-6 md:gap-8 md:py-8">
       <div className="px-4 lg:px-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Testimonials</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl font-semibold tracking-tight">Testimonials</h1>
+            <p className="text-muted-foreground text-sm mt-1">
               Manage and review customer testimonials
-              <span className="block text-sm mt-1">
-                Project: <span className="font-medium">{userProject?.name}</span>
-              </span>
+              {userProject?.name && (
+                <span className="block mt-1">
+                  Project: <span className="font-medium">{userProject.name}</span>
+                </span>
+              )}
             </p>
           </div>
         </div>
