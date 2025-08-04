@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
       
       // Ensure slug is unique
       let counter = 1
-      let baseSlug = finalSlug
+      const baseSlug = finalSlug
       while (!(await isSlugAvailable(finalSlug, project.id))) {
         finalSlug = `${baseSlug}-${counter}`
         counter++

@@ -132,7 +132,7 @@ export interface TestimonialSubmission {
   content: string;
   rating?: number;
   source: 'manual' | 'email_invite' | 'scraped' | 'integration' | 'imported';
-  sourceMetadata?: Record<string, any>;
+  sourceMetadata?: Record<string, unknown>;
 }
 
 export interface SubmissionResult {
@@ -150,7 +150,7 @@ export interface ServiceCredentials {
   accessToken?: string;
   refreshToken?: string;
   subdomain?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface SyncResult {

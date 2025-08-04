@@ -142,7 +142,7 @@ export default function Home() {
             {/* Badge */}
             <div className="mb-6 sm:mb-8">
               <span className="inline-flex items-center rounded-full bg-orange-50 dark:bg-orange-900/20 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-orange-700 dark:text-orange-300 ring-1 ring-inset ring-orange-600/20 dark:ring-orange-400/20">
-                <span className="hidden sm:inline">FP&A FOR HIGH GROWTH TEAMS</span>
+                <span className="hidden sm:inline">FP&amp;A FOR HIGH GROWTH TEAMS</span>
                 <span className="sm:hidden">FOR GROWING BUSINESSES</span>
               </span>
             </div>

@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Copy, ExternalLink, Save, Loader2, Eye, EyeOff, Palette } from 'lucide-react'
 import { Project, PublicPageSettings } from '@/db/types'
 import { toast } from 'sonner'
@@ -88,7 +87,7 @@ export function PublicSharingSection({ project, onUpdate, onUnsavedChanges }: Pu
     setFormData(prev => ({ ...prev, publicSlug: cleanSlug }))
   }
 
-  const handleSettingsChange = (key: keyof PublicPageSettings, value: any) => {
+  const handleSettingsChange = (key: keyof PublicPageSettings, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       settings: { ...prev.settings, [key]: value }

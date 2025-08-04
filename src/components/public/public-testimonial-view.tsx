@@ -131,7 +131,7 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
                   color: settings.theme === 'dark' ? '#f9fafb' : '#111827'
                 }}
               >
-                "{testimonial.content}"
+                &ldquo;{testimonial.content}&rdquo;
               </blockquote>
 
               {/* Customer Info */}

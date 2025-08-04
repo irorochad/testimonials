@@ -6,10 +6,10 @@ import { PublicTestimonial, PublicPageSettings } from '@/db/types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params
+    const { slug } = await params
 
     // Get project by public slug
     const project = await db

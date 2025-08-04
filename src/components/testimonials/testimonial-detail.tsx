@@ -24,29 +24,10 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ExportDropdown } from "./export-dropdown"
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface TestimonialDetailProps {
-  testimonial: {
-    id: string
-    customerName: string
-    customerEmail: string
-    customerCompany: string | null
-    customerTitle: string | null
-    customerImageUrl: string | null
-    content: string
-    rating: number | null
-    status: string
-    source: string
-    sourceMetadata: any
-    tags: string[] | null
-    createdAt: Date
-    approvedAt: Date | null
-    projectId: string
-    projectName: string
-    groupId: string | null
-    groupName: string | null
-    groupColor: string | null
-  }
+  testimonial: TestimonialWithProjectAndGroup
 }
 
 // Status badge component

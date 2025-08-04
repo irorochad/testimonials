@@ -3,11 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card } from '@/components/ui/card'
 import { BasicInfoSection } from './basic-info-section'
 import { PublicSharingSection } from './public-sharing-section'
 import { Project } from '@/db/types'
-import { toast } from 'sonner'
 
 interface SettingsViewProps {
   project: Project

@@ -15,7 +15,7 @@ export interface TestimonialWithProjectAndGroup {
   status: string
   isPublic: boolean
   source: string
-  sourceMetadata: any
+  sourceMetadata: unknown
   tags: string[] | null
   createdAt: Date
   approvedAt: Date | null
@@ -77,7 +77,7 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
     return result.map(item => ({
       ...item,
       tags: item.tags as string[] | null,
-      sourceMetadata: item.sourceMetadata as any
+      sourceMetadata: item.sourceMetadata as unknown
     }));
   } catch (error) {
     console.error('Error fetching testimonials:', error);
@@ -130,7 +130,7 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
     return {
       ...testimonial,
       tags: testimonial.tags as string[] | null,
-      sourceMetadata: testimonial.sourceMetadata as any
+      sourceMetadata: testimonial.sourceMetadata as unknown
     };
   } catch (error) {
     // console.error('Error fetching testimonial:', error);
