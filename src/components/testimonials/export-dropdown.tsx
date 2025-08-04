@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { WidgetBuilder } from "./widget-builder"
-import { PublicShareModal } from "./public-share-modal"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface ExportDropdownProps {
@@ -33,7 +32,6 @@ export function ExportDropdown({
   children
 }: ExportDropdownProps) {
   const [isWidgetBuilderOpen, setIsWidgetBuilderOpen] = useState(false)
-  const [isPublicShareOpen, setIsPublicShareOpen] = useState(false)
 
   // Generate CSV content
   const generateCSV = (data: TestimonialWithProjectAndGroup[]) => {
@@ -101,13 +99,32 @@ export function ExportDropdown({
     setIsWidgetBuilderOpen(true)
   }
 
-  const handleSharePublic = () => {
+  const handleSharePublic = async () => {
     if (testimonials.length === 0) {
       toast.error('No testimonials to export')
       return
     }
 
-    setIsPublicShareOpen(true)
+    // Check if public sharing is enabled
+    try {
+      const response = await fetch('/api/projects/public-settings')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.isPublic && data.publicUrl) {
+          // Copy URL to clipboard and show success message
+          navigator.clipboard.writeText(data.publicUrl)
+          toast.success('Public URL copied to clipboard!')
+        } else {
+          // Direct user to settings
+          toast.info('Enable public sharing in Settings first')
+          window.location.href = '/settings?tab=public-sharing'
+        }
+      } else {
+        toast.error('Failed to check public sharing status')
+      }
+    } catch (error) {
+      toast.error('Failed to check public sharing status')
+    }
   }
 
   return (
@@ -148,13 +165,6 @@ export function ExportDropdown({
         testimonials={testimonials}
         selectedTestimonials={testimonials}
         groupName={groupName}
-      />
-
-      {/* Public Share Modal */}
-      <PublicShareModal
-        isOpen={isPublicShareOpen}
-        onClose={() => setIsPublicShareOpen(false)}
-        projectName={testimonials[0]?.projectName || 'Project'}
       />
     </>
   )
