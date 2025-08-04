@@ -52,11 +52,7 @@ const data = {
         },
       ],
     },
-    {
-      title: "Widget",
-      url: "/widgets",
-      icon: IconInnerShadowTop,
-    },
+
     {
       title: "Analytics",
       url: "#",
