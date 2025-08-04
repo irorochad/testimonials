@@ -133,7 +133,7 @@ async function updateTestimonialStatus(id: string, status: string) {
 
 export function TestimonialDetail({ testimonial: initialTestimonial }: TestimonialDetailProps) {
   const [testimonial, setTestimonial] = useState(initialTestimonial)
-  const router = useRouter()
+
 
   const handleStatusUpdate = async (newStatus: string) => {
     try {
@@ -163,17 +163,17 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* Back button - positioned absolutely, lower to avoid header conflict */}
 
-      <Button
+      {/* <Button
         onClick={() => router.push('/testimonials')}
         className="absolute top-34 left-6  btnSecondary"
       >
         Back to Testimonials
-      </Button>
+      </Button> */}
 
       {/* Single Beautiful Card */}
       <Card
         className="w-full max-w-2xl border border-white/20 backdrop-blur-md bg-white/10 dark:bg-black/10 shadow-2xl dark:bg-none"
-        
+
       >
         <CardContent className="p-8">
           {/* Header with customer info and status */}

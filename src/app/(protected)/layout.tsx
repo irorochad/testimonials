@@ -20,13 +20,13 @@ export default function ProtectedLayout({
       }
     >
       <AppSidebar variant="inset" />
-      <SidebarInset>
+      <SidebarInset className="flex flex-col min-h-screen">
         <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
+        <main className="flex-1 p-4 overflow-auto">
+          <div className="@container/main">
             {children}
           </div>
-        </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

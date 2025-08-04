@@ -79,7 +79,7 @@ export function LoginForm({
             <Label htmlFor="password">Password</Label>
             <a
               href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
+              className="ml-auto text-sm underline-offset-4 hover:underline cursor-pointer"
             >
               Forgot your password?
             </a>
@@ -136,7 +136,7 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="underline underline-offset-4">
+        <Link href="/signup" className="underline underline-offset-4 cursor-pointer">
           Sign up
         </Link>
       </div>
