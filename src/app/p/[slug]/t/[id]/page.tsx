@@ -7,7 +7,7 @@ import { eq, and } from 'drizzle-orm'
 import { PublicTestimonial, PublicPageSettings } from '@/db/types'
 
 interface PublicTestimonialPageProps {
-  params: { slug: string; id: string }
+  params: Promise<{ slug: string; id: string }>
 }
 
 async function getPublicTestimonial(slug: string, testimonialId: string) {
@@ -79,7 +79,8 @@ async function getPublicTestimonial(slug: string, testimonialId: string) {
 }
 
 export async function generateMetadata({ params }: PublicTestimonialPageProps): Promise<Metadata> {
-  const data = await getPublicTestimonial(params.slug, params.id)
+  const { slug, id } = await params
+  const data = await getPublicTestimonial(slug, id)
   
   if (!data) {
     return {
@@ -100,7 +101,7 @@ export async function generateMetadata({ params }: PublicTestimonialPageProps): 
       title,
       description,
       type: 'article',
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/p/${params.slug}/t/${params.id}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/p/${slug}/t/${id}`,
       siteName: project.brandName || project.name,
     },
     twitter: {
@@ -112,7 +113,8 @@ export async function generateMetadata({ params }: PublicTestimonialPageProps): 
 }
 
 export default async function PublicTestimonialPage({ params }: PublicTestimonialPageProps) {
-  const data = await getPublicTestimonial(params.slug, params.id)
+  const { slug, id } = await params
+  const data = await getPublicTestimonial(slug, id)
   
   if (!data) {
     notFound()
@@ -122,7 +124,7 @@ export default async function PublicTestimonialPage({ params }: PublicTestimonia
     <PublicTestimonialView
       project={data.project}
       testimonial={data.testimonial}
-      slug={params.slug}
+      slug={slug}
     />
   )
 }

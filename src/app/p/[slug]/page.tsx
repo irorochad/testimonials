@@ -7,7 +7,7 @@ import { eq, and } from 'drizzle-orm'
 import { PublicTestimonial, PublicPageSettings } from '@/db/types'
 
 interface PublicPageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 async function getPublicProject(slug: string) {
@@ -67,7 +67,8 @@ async function getPublicTestimonials(projectId: string) {
 }
 
 export async function generateMetadata({ params }: PublicPageProps): Promise<Metadata> {
-  const project = await getPublicProject(params.slug)
+  const { slug } = await params
+  const project = await getPublicProject(slug)
   
   if (!project) {
     return {
@@ -85,7 +86,7 @@ export async function generateMetadata({ params }: PublicPageProps): Promise<Met
       title,
       description,
       type: 'website',
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/p/${params.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/p/${slug}`,
       siteName: project.brandName || project.name,
     },
     twitter: {
@@ -97,7 +98,8 @@ export async function generateMetadata({ params }: PublicPageProps): Promise<Met
 }
 
 export default async function PublicTestimonialsPage({ params }: PublicPageProps) {
-  const project = await getPublicProject(params.slug)
+  const { slug } = await params
+  const project = await getPublicProject(slug)
   
   if (!project) {
     notFound()
@@ -125,7 +127,7 @@ export default async function PublicTestimonialsPage({ params }: PublicPageProps
         settings,
       }}
       testimonials={testimonials}
-      slug={params.slug}
+      slug={slug}
     />
   )
 }

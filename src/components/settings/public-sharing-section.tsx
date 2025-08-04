@@ -26,7 +26,7 @@ interface FormData {
 const defaultSettings: PublicPageSettings = {
   theme: 'light',
   primaryColor: '#3B82F6',
-  layout: 'grid',
+  layout: 'grid', // Always grid, not user-configurable
   showRatings: true,
   showCompany: true,
   showTitle: true,
@@ -249,50 +249,77 @@ export function PublicSharingSection({ project, onUpdate, onUnsavedChanges }: Pu
             </div>
             
             <div className="space-y-6">
-              {/* Theme and Layout */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="theme">Theme</Label>
-                  <Select
-                    value={formData.settings.theme}
-                    onValueChange={(value: 'light' | 'dark' | 'auto') => 
-                      handleSettingsChange('theme', value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
-                      <SelectItem value="auto">Auto</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Theme Selection */}
+              <div className="space-y-3">
+                <Label>Theme</Label>
+                <p className="text-sm text-muted-foreground">Select your default theme</p>
+                <div className="grid grid-cols-3 gap-4">
+                  {/* Dark Theme */}
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSettingsChange('theme', 'dark')}
+                      className={`w-full border-2 rounded-lg p-3 bg-gray-900 transition-colors ${
+                        formData.settings.theme === 'dark'
+                          ? 'border-blue-500'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className="h-2 bg-gray-700 rounded"></div>
+                        <div className="h-2 bg-gray-800 rounded w-3/4"></div>
+                        <div className="h-2 bg-gray-800 rounded w-1/2"></div>
+                      </div>
+                    </button>
+                    <p className="text-sm text-center font-medium">Dark</p>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="layout">Layout</Label>
-                  <Select
-                    value={formData.settings.layout}
-                    onValueChange={(value: 'grid' | 'masonry' | 'list') => 
-                      handleSettingsChange('layout', value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="grid">Grid</SelectItem>
-                      <SelectItem value="masonry">Masonry</SelectItem>
-                      <SelectItem value="list">List</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {/* System Default Theme */}
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSettingsChange('theme', 'auto')}
+                      className={`w-full border-2 rounded-lg p-3 bg-gradient-to-r from-white to-gray-900 transition-colors ${
+                        formData.settings.theme === 'auto'
+                          ? 'border-blue-500'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className="h-2 bg-gray-400 rounded"></div>
+                        <div className="h-2 bg-gray-500 rounded w-3/4"></div>
+                        <div className="h-2 bg-gray-500 rounded w-1/2"></div>
+                      </div>
+                    </button>
+                    <p className="text-sm text-center">System Default</p>
+                  </div>
+
+                  {/* Light Theme */}
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSettingsChange('theme', 'light')}
+                      className={`w-full border-2 rounded-lg p-3 bg-white transition-colors ${
+                        formData.settings.theme === 'light'
+                          ? 'border-blue-500'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className="h-2 bg-gray-200 rounded"></div>
+                        <div className="h-2 bg-gray-100 rounded w-3/4"></div>
+                        <div className="h-2 bg-gray-100 rounded w-1/2"></div>
+                      </div>
+                    </button>
+                    <p className="text-sm text-center">Light</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Primary Color */}
+              {/* Brand Color */}
               <div className="space-y-3">
-                <Label>Primary Color</Label>
+                <Label>Brand Color</Label>
+                <p className="text-sm text-muted-foreground">Highlight color for main objects, e.g buttons</p>
                 <div className="flex items-center gap-2 flex-wrap">
                   {presetColors.map((color) => (
                     <button

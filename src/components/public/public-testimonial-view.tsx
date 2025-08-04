@@ -32,17 +32,41 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
 
   return (
     <div 
-      className="min-h-screen bg-background"
+      className={`min-h-screen ${
+        settings.theme === 'dark' ? 'dark' : 
+        settings.theme === 'light' ? '' : 
+        '' // auto/system default
+      }`}
       style={{
         '--primary-color': settings.primaryColor,
+        backgroundColor: settings.theme === 'dark' ? '#0f172a' : 
+                        settings.theme === 'light' ? '#ffffff' : 
+                        'var(--background)', // system default
+        color: settings.theme === 'dark' ? '#f8fafc' : 
+               settings.theme === 'light' ? '#0f172a' : 
+               'var(--foreground)', // system default
       } as React.CSSProperties}
     >
       {/* Header */}
-      <div className="border-b bg-card">
+      <div 
+        className="border-b"
+        style={{
+          backgroundColor: settings.theme === 'dark' ? '#1e293b' : '#ffffff',
+          borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
+        }}
+      >
         <div className="container mx-auto px-4 py-6 max-w-4xl">
           <div className="flex items-center justify-between">
             <Link href={`/p/${slug}`}>
-              <Button variant="ghost" size="sm" className="gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="gap-2"
+                style={{
+                  color: settings.theme === 'dark' ? '#f8fafc' : '#0f172a',
+                  backgroundColor: 'transparent'
+                }}
+              >
                 <ArrowLeft className="w-4 h-4" />
                 Back to all testimonials
               </Button>
@@ -54,7 +78,16 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  style={{
+                    borderColor: settings.primaryColor,
+                    color: settings.primaryColor,
+                    backgroundColor: 'transparent'
+                  }}
+                >
                   Visit {brandName}
                   <ExternalLink className="w-4 h-4" />
                 </Button>
@@ -66,7 +99,13 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
 
       {/* Testimonial */}
       <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <Card className="mx-auto max-w-2xl">
+        <Card 
+          className="mx-auto max-w-2xl"
+          style={{
+            backgroundColor: settings.theme === 'dark' ? '#1f2937' : '#ffffff',
+            borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
+          }}
+        >
           <CardContent className="p-8">
             <div className="space-y-6">
               {/* Rating */}
@@ -75,42 +114,67 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-6 h-6 ${
-                        i < testimonial.rating!
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
-                      }`}
+                      className="w-6 h-6"
+                      style={{
+                        fill: i < testimonial.rating! ? settings.primaryColor : 'transparent',
+                        color: i < testimonial.rating! ? settings.primaryColor : '#d1d5db'
+                      }}
                     />
                   ))}
                 </div>
               )}
 
               {/* Content */}
-              <blockquote className="text-xl leading-relaxed text-center text-foreground">
+              <blockquote 
+                className="text-xl leading-relaxed text-center"
+                style={{
+                  color: settings.theme === 'dark' ? '#f9fafb' : '#111827'
+                }}
+              >
                 "{testimonial.content}"
               </blockquote>
 
               {/* Customer Info */}
-              <div className="flex flex-col items-center gap-4 pt-6 border-t">
+              <div 
+                className="flex flex-col items-center gap-4 pt-6 border-t"
+                style={{
+                  borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
+                }}
+              >
                 {settings.showImages && (
                   <Avatar className="w-16 h-16">
                     <AvatarImage 
                       src={testimonial.customerImageUrl} 
                       alt={testimonial.customerName} 
                     />
-                    <AvatarFallback className="text-lg">
+                    <AvatarFallback 
+                      className="text-lg"
+                      style={{
+                        backgroundColor: settings.primaryColor,
+                        color: '#ffffff'
+                      }}
+                    >
                       {initials}
                     </AvatarFallback>
                   </Avatar>
                 )}
                 
                 <div className="text-center">
-                  <p className="font-semibold text-lg text-foreground">
+                  <p 
+                    className="font-semibold text-lg"
+                    style={{
+                      color: settings.theme === 'dark' ? '#f9fafb' : '#111827'
+                    }}
+                  >
                     {testimonial.customerName}
                   </p>
                   
                   {(settings.showTitle || settings.showCompany) && (
-                    <div className="text-muted-foreground">
+                    <div 
+                      style={{
+                        color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280'
+                      }}
+                    >
                       {settings.showTitle && testimonial.customerTitle && (
                         <span>{testimonial.customerTitle}</span>
                       )}
@@ -126,7 +190,12 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
                 </div>
 
                 {/* Date */}
-                <div className="text-sm text-muted-foreground">
+                <div 
+                  className="text-sm"
+                  style={{
+                    color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280'
+                  }}
+                >
                   {new Date(testimonial.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -140,16 +209,30 @@ export function PublicTestimonialView({ project, testimonial, slug }: PublicTest
       </div>
 
       {/* Footer */}
-      <div className="border-t bg-muted/30 mt-12">
+      <div 
+        className="border-t mt-12"
+        style={{
+          backgroundColor: settings.theme === 'dark' ? '#0f172a' : '#f9fafb',
+          borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
+        }}
+      >
         <div className="container mx-auto px-4 py-6 max-w-4xl">
-          <div className="text-center text-sm text-muted-foreground">
+          <div 
+            className="text-center text-sm"
+            style={{
+              color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280'
+            }}
+          >
             <p>Powered by {brandName}</p>
             {project.websiteUrl && (
               <Link
                 href={project.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-foreground transition-colors"
+                className="transition-colors"
+                style={{
+                  color: settings.primaryColor
+                }}
               >
                 {project.websiteUrl.replace(/^https?:\/\//, '')}
               </Link>
