@@ -3,8 +3,8 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { users, groups, testimonials } from "@/db/schema"
-import { eq, count } from "drizzle-orm"
-import { getUserProject } from "@/lib/testimonials"
+import { eq, count, and } from "drizzle-orm"
+import { getUserProject, getUserTestimonials } from "@/lib/testimonials"
 import { GroupsView } from "@/components/testimonials/groups-view"
 
 export default async function GroupsPage() {
@@ -44,7 +44,7 @@ export default async function GroupsPage() {
         redirect("/onboarding");
     }
 
-    // Get groups for this project with testimonial counts
+    // Get groups for this project with testimonial counts (only approved testimonials)
     const projectGroups = await db
         .select({
             id: groups.id,
@@ -57,10 +57,16 @@ export default async function GroupsPage() {
             testimonialCount: count(testimonials.id),
         })
         .from(groups)
-        .leftJoin(testimonials, eq(groups.id, testimonials.groupId))
+        .leftJoin(testimonials, and(
+            eq(groups.id, testimonials.groupId),
+            eq(testimonials.status, 'approved')
+        ))
         .where(eq(groups.projectId, userProject.id))
         .groupBy(groups.id)
         .orderBy(groups.createdAt);
+
+    // Get all testimonials for this user (for instant filtering without API calls)
+    const allTestimonials = await getUserTestimonials(session.user.id);
 
     // Transform groups to ensure color is never null and add testimonial count
     const transformedGroups = projectGroups.map(group => ({
@@ -88,6 +94,7 @@ export default async function GroupsPage() {
             <GroupsView
                 groups={transformedGroups}
                 projectId={userProject.id}
+                allTestimonials={allTestimonials}
             />
         </div>
     )

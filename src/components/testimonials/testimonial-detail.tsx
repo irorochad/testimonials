@@ -15,6 +15,7 @@ import {
   IconBuilding,
   IconMail,
   IconTag,
+  IconCode,
 } from "@tabler/icons-react"
 import { toast } from "sonner"
 
@@ -22,6 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ExportDropdown } from "./export-dropdown"
 
 interface TestimonialDetailProps {
   testimonial: {
@@ -307,6 +309,12 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
               <IconFlag className="w-4 h-4" />
               {testimonial.status === 'flagged' ? 'Flagged' : 'Flag'}
             </Button>
+
+            <ExportDropdown
+              testimonials={[testimonial]}
+              groupName={testimonial.groupName || undefined}
+              triggerVariant="outline"
+            />
           </div>
 
           {/* Footer with metadata */}
@@ -330,6 +338,8 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
           </div>
         </CardContent>
       </Card>
+
+
     </div>
   )
 }

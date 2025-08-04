@@ -8,6 +8,7 @@ import {
     IconTrash,
     IconUsers,
     IconTag,
+    IconCode,
 } from "@tabler/icons-react"
 import { toast } from "sonner"
 
@@ -24,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { ExportDropdown } from "./export-dropdown"
 
 interface Group {
     id: string
@@ -39,9 +41,10 @@ interface Group {
 interface GroupsViewProps {
     groups: Group[]
     projectId: string
+    allTestimonials?: any[] // All testimonials to avoid API calls
 }
 
-export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps) {
+export function GroupsView({ groups: initialGroups, projectId, allTestimonials = [] }: GroupsViewProps) {
     const [groups, setGroups] = useState(initialGroups)
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -198,6 +201,8 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
         setIsCreateDialogOpen(true)
     }
 
+
+
     return (
         <div className="w-full space-y-6">
             {/* Header */}
@@ -265,6 +270,22 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                                             </CardTitle>
                                         </div>
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <ExportDropdown
+                                                testimonials={allTestimonials.filter(testimonial => 
+                                                    testimonial.groupId === group.id && testimonial.status === 'approved'
+                                                )}
+                                                groupName={group.name}
+                                            >
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0 cursor-pointer hover:bg-white/20"
+                                                    style={{ color: textColor }}
+                                                    disabled={group.testimonialCount === 0}
+                                                >
+                                                    <IconCode className="w-4 h-4" />
+                                                </Button>
+                                            </ExportDropdown>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -475,6 +496,8 @@ export function GroupsView({ groups: initialGroups, projectId }: GroupsViewProps
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+
         </div>
     )
 }
