@@ -95,7 +95,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Helper function to check if a parent item should be active (only if it has a direct URL)
   const isParentActive = (url: string) => {
-    return url && isActive(url)
+    return Boolean(url && isActive(url))
   }
 
   return (
