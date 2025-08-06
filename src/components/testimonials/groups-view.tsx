@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     IconPlus,
     IconEdit,
@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { CardSkeleton, GridSkeleton } from "@/components/ui/loading-skeleton"
 import { ExportDropdown } from "./export-dropdown"
 
 interface Group {
@@ -38,14 +39,13 @@ interface Group {
     testimonialCount: number
 }
 
-interface GroupsViewProps {
-    groups: Group[]
-    projectId: string
-    allTestimonials?: any[] // All testimonials to avoid API calls
-}
+interface GroupsViewProps {}
 
-export function GroupsView({ groups: initialGroups, projectId, allTestimonials = [] }: GroupsViewProps) {
-    const [groups, setGroups] = useState(initialGroups)
+export function GroupsView({}: GroupsViewProps) {
+    const [groups, setGroups] = useState<Group[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [allTestimonials, setAllTestimonials] = useState<any[]>([])
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [editingGroup, setEditingGroup] = useState<Group | null>(null)
@@ -71,13 +71,7 @@ export function GroupsView({ groups: initialGroups, projectId, allTestimonials =
         return luminance > 0.5 ? '#000000' : '#ffffff'
     }
 
-    // Helper function to get a lighter version of the color for better readability
-    const getLighterColor = (hexColor: string, opacity: number = 0.1) => {
-        const r = parseInt(hexColor.slice(1, 3), 16)
-        const g = parseInt(hexColor.slice(3, 5), 16)
-        const b = parseInt(hexColor.slice(5, 7), 16)
-        return `rgba(${r}, ${g}, ${b}, ${opacity})`
-    }
+
 
     const resetForm = () => {
         setFormData({
@@ -103,7 +97,6 @@ export function GroupsView({ groups: initialGroups, projectId, allTestimonials =
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    projectId,
                     name: formData.name.trim(),
                     description: formData.description.trim() || null,
                     color: formData.color,
@@ -201,142 +194,198 @@ export function GroupsView({ groups: initialGroups, projectId, allTestimonials =
         setIsCreateDialogOpen(true)
     }
 
+    // Fetch groups data
+    useEffect(() => {
+        fetchGroups()
+    }, [])
 
+    const fetchGroups = async () => {
+        try {
+            setError(null)
+            const response = await fetch('/api/groups')
+            if (response.ok) {
+                const data = await response.json()
+                setGroups(data)
+                // Also fetch testimonials for export functionality
+                const testimonialsResponse = await fetch('/api/testimonials')
+                if (testimonialsResponse.ok) {
+                    const testimonialsData = await testimonialsResponse.json()
+                    setAllTestimonials(testimonialsData)
+                }
+            } else {
+                setError('Failed to fetch groups')
+                toast.error('Failed to fetch groups')
+            }
+        } catch (error) {
+            setError('Failed to fetch groups')
+            toast.error('Failed to fetch groups')
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
-        <div className="w-full space-y-6">
-            {/* Header */}
-            {groups.length > 0 && (
-                <div className="flex items-center justify-between px-4 lg:px-6">
+        <div className="flex flex-col gap-6 py-6 md:gap-8 md:py-8">
+            {/* Header - Always visible immediately */}
+            <div className="px-4 lg:px-6">
+                <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-sm text-muted-foreground">
-                            {groups.length} group{groups.length !== 1 ? 's' : ''} total
+                        <h1 className="text-2xl font-semibold tracking-tight">Testimonial Groups</h1>
+                        <p className="text-muted-foreground text-sm mt-1">
+                            Organize testimonials into categories and groups
+                            {loading ? (
+                                <div className="h-4 w-24 bg-muted animate-pulse rounded mt-1" />
+                            ) : groups.length > 0 ? (
+                                <span className="block mt-1">
+                                    {groups.length} group{groups.length !== 1 ? 's' : ''} total
+                                </span>
+                            ) : null}
                         </p>
                     </div>
-
-                    <Button onClick={openCreateDialog} className="btn-primary">
+                    <Button onClick={openCreateDialog} className="cursor-pointer">
                         <IconPlus className="w-4 h-4 mr-2" />
                         Create Group
                     </Button>
                 </div>
-            )}
+            </div>
 
-            {/* Groups Grid */}
-            {groups.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 px-4">
-                    <div className="text-center">
-                        <IconTag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-                            No groups yet
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                            Create your first group to start organizing testimonials
-                        </p>
-                        <Button onClick={openCreateDialog} className="btn-primary">
-                            <IconPlus className="w-4 h-4 mr-2" />
-                            Create First Group
-                        </Button>
+            {/* Groups Grid - Progressive loading */}
+            <div className="w-full">
+                {loading ? (
+                    <div className="px-4 lg:px-6">
+                        <GridSkeleton count={6}>
+                            <CardSkeleton />
+                        </GridSkeleton>
                     </div>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-6">
-                    {groups.map((group) => {
-                        const textColor = getTextColor(group.color)
-                        const isLightBackground = textColor === '#000000'
+                ) : error ? (
+                    <div className="flex flex-col items-center justify-center py-12 px-4">
+                        <div className="text-center">
+                            <IconTag className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                            <h3 className="text-lg font-semibold mb-2">Failed to load groups</h3>
+                            <p className="text-muted-foreground mb-4 max-w-sm">
+                                {error}
+                            </p>
+                            <Button onClick={fetchGroups} className="cursor-pointer">
+                                Try Again
+                            </Button>
+                        </div>
+                    </div>
+                ) : groups.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 px-4">
+                        <div className="text-center">
+                            <IconTag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+                                No groups yet
+                            </h3>
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Create your first group to start organizing testimonials
+                            </p>
+                            <Button onClick={openCreateDialog} className="cursor-pointer">
+                                <IconPlus className="w-4 h-4 mr-2" />
+                                Create First Group
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-6">
+                        {groups.map((group) => {
+                            const textColor = getTextColor(group.color)
+                            const isLightBackground = textColor === '#000000'
 
-                        return (
-                            <Card
-                                key={group.id}
-                                className="relative group hover:shadow-lg transition-all duration-200 border-0"
-                                style={{
-                                    backgroundColor: group.color,
-                                    color: textColor
-                                }}
-                            >
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <div
-                                                className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-white/30"
-                                                style={{
-                                                    backgroundColor: isLightBackground ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)'
-                                                }}
-                                            />
-                                            <CardTitle
-                                                className="text-lg truncate"
-                                                style={{ color: textColor }}
-                                            >
-                                                {group.name}
-                                            </CardTitle>
-                                        </div>
-                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <ExportDropdown
-                                                testimonials={allTestimonials.filter(testimonial => 
-                                                    testimonial.groupId === group.id && testimonial.status === 'approved'
-                                                )}
-                                                groupName={group.name}
-                                            >
+                            return (
+                                <Card
+                                    key={group.id}
+                                    className="relative group hover:shadow-lg transition-all duration-200 border-0"
+                                    style={{
+                                        backgroundColor: group.color,
+                                        color: textColor
+                                    }}
+                                >
+                                    <CardHeader className="pb-3">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div
+                                                    className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-white/30"
+                                                    style={{
+                                                        backgroundColor: isLightBackground ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)'
+                                                    }}
+                                                />
+                                                <CardTitle
+                                                    className="text-lg truncate"
+                                                    style={{ color: textColor }}
+                                                >
+                                                    {group.name}
+                                                </CardTitle>
+                                            </div>
+                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <ExportDropdown
+                                                    testimonials={allTestimonials.filter(testimonial => 
+                                                        testimonial.groupId === group.id && testimonial.status === 'approved'
+                                                    )}
+                                                    groupName={group.name}
+                                                >
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0 cursor-pointer hover:bg-white/20"
+                                                        style={{ color: textColor }}
+                                                        disabled={group.testimonialCount === 0}
+                                                    >
+                                                        <IconCode className="w-4 h-4" />
+                                                    </Button>
+                                                </ExportDropdown>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
+                                                    onClick={() => openEditDialog(group)}
                                                     className="h-8 w-8 p-0 cursor-pointer hover:bg-white/20"
                                                     style={{ color: textColor }}
-                                                    disabled={group.testimonialCount === 0}
                                                 >
-                                                    <IconCode className="w-4 h-4" />
+                                                    <IconEdit className="w-4 h-4" />
                                                 </Button>
-                                            </ExportDropdown>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => openEditDialog(group)}
-                                                className="h-8 w-8 p-0 cursor-pointer hover:bg-white/20"
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleDeleteGroup(group.id)}
+                                                    className="h-8 w-8 p-0 cursor-pointer hover:bg-red-500/20"
+                                                    style={{ color: textColor }}
+                                                >
+                                                    <IconTrash className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        {group.description && (
+                                            <p
+                                                className="text-sm mb-3 line-clamp-2 opacity-80"
                                                 style={{ color: textColor }}
                                             >
-                                                <IconEdit className="w-4 h-4" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => handleDeleteGroup(group.id)}
-                                                className="h-8 w-8 p-0 cursor-pointer hover:bg-red-500/20"
+                                                {group.description}
+                                            </p>
+                                        )}
+                                        <div className="flex items-center justify-between">
+                                            <div
+                                                className="flex items-center gap-1 text-sm opacity-75"
                                                 style={{ color: textColor }}
                                             >
-                                                <IconTrash className="w-4 h-4" />
-                                            </Button>
+                                                <IconUsers className="w-4 h-4" />
+                                                <span>{group.testimonialCount} testimonial{group.testimonialCount !== 1 ? 's' : ''}</span>
+                                            </div>
+                                            <div
+                                                className="text-xs opacity-60"
+                                                style={{ color: textColor }}
+                                            >
+                                                Created {new Date(group.createdAt).toLocaleDateString()}
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    {group.description && (
-                                        <p
-                                            className="text-sm mb-3 line-clamp-2 opacity-80"
-                                            style={{ color: textColor }}
-                                        >
-                                            {group.description}
-                                        </p>
-                                    )}
-                                    <div className="flex items-center justify-between">
-                                        <div
-                                            className="flex items-center gap-1 text-sm opacity-75"
-                                            style={{ color: textColor }}
-                                        >
-                                            <IconUsers className="w-4 h-4" />
-                                            <span>{group.testimonialCount} testimonial{group.testimonialCount !== 1 ? 's' : ''}</span>
-                                        </div>
-                                        <div
-                                            className="text-xs opacity-60"
-                                            style={{ color: textColor }}
-                                        >
-                                            Created {new Date(group.createdAt).toLocaleDateString()}
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )
-                    })}
-                </div>
-            )}
+                                    </CardContent>
+                                </Card>
+                            )
+                        })}
+                    </div>
+                )}
+            </div>
 
             {/* Create Dialog */}
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

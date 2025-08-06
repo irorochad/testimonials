@@ -9,6 +9,7 @@ import {
   IconChevronDown,
 } from "@tabler/icons-react"
 
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -26,6 +27,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { TestimonialsGrid } from "./testimonials-grid"
 import { TestimonialsTableSimple } from "./testimonials-table-simple"
+import { EmptyState } from "@/components/empty-state"
+import { TestimonialCardSkeleton, TableRowSkeleton, GridSkeleton } from "@/components/ui/loading-skeleton"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface Group {
@@ -35,19 +38,34 @@ interface Group {
 }
 
 interface TestimonialsViewProps {
-  data: TestimonialWithProjectAndGroup[]
+  data?: TestimonialWithProjectAndGroup[]
   groups?: Group[]
   projectId: string | null
+  loading?: boolean
+  error?: string | null
+  onRetry?: () => void
 }
 
 type ViewMode = 'cards' | 'table'
 
-export function TestimonialsView({ data: initialData, groups, projectId }: TestimonialsViewProps) {
+export function TestimonialsView({
+  data: initialData = [],
+  groups,
+  projectId,
+  loading = false,
+  error = null,
+  onRetry
+}: TestimonialsViewProps) {
   const [data, setData] = React.useState(() => initialData)
   const [viewMode, setViewMode] = React.useState<ViewMode>('cards')
   const [searchTerm, setSearchTerm] = React.useState('')
   const [statusFilter, setStatusFilter] = React.useState<string>('all')
   const [sourceFilter, setSourceFilter] = React.useState<string>('all')
+
+  // Update data when initialData changes
+  React.useEffect(() => {
+    setData(initialData)
+  }, [initialData])
 
   // Filter data based on search and filters
   const filteredData = React.useMemo(() => {
@@ -214,25 +232,88 @@ export function TestimonialsView({ data: initialData, groups, projectId }: Testi
 
       {/* Results Count */}
       <div className="px-4 lg:px-6">
-        <p className="text-sm text-muted-foreground">
-          Showing {filteredData.length} of {data.length} testimonials
-        </p>
+        {loading ? (
+          <div className="h-5 w-48 bg-muted animate-pulse rounded" />
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Showing {filteredData.length} of {data.length} testimonials
+          </p>
+        )}
       </div>
 
       {/* View Content */}
-      {viewMode === 'cards' ? (
-        <TestimonialsGrid
-          data={filteredData}
-          groups={groups}
-          onStatusUpdate={handleStatusUpdate}
-          onGroupUpdate={handleGroupUpdate}
-        />
-      ) : (
-        <TestimonialsTableSimple
-          data={filteredData}
-          onStatusUpdate={handleStatusUpdate}
-        />
-      )}
+      <div className="px-4 lg:px-6">
+        {loading ? (
+          // Loading skeletons
+          viewMode === 'cards' ? (
+            <GridSkeleton count={6}>
+              <TestimonialCardSkeleton />
+            </GridSkeleton>
+          ) : (
+            <div className="border rounded-lg">
+              <table className="w-full">
+                <thead className="border-b bg-muted/50">
+                  <tr>
+                    <th className="text-left p-4 font-medium">Customer</th>
+                    <th className="text-left p-4 font-medium">Testimonial</th>
+                    <th className="text-left p-4 font-medium">Rating</th>
+                    <th className="text-left p-4 font-medium">Status</th>
+                    <th className="text-left p-4 font-medium">Source</th>
+                    <th className="text-left p-4 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <TableRowSkeleton key={i} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        ) : error ? (
+          // Error state
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="text-center">
+              <IconTable className="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Failed to load testimonials</h3>
+              <p className="text-muted-foreground mb-4 max-w-sm">
+                {error}
+              </p>
+              {onRetry && (
+                <Button onClick={onRetry} className="cursor-pointer">
+                  Try Again
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : data.length === 0 ? (
+          // Empty state
+          <EmptyState
+            title="No testimonials yet"
+            description="Start collecting testimonials to see them here"
+            actionLabel="Add Testimonial"
+            onAction={() => {
+              // Handle add testimonial action
+              console.log('Add testimonial clicked')
+            }}
+          />
+        ) : (
+          // Actual content
+          viewMode === 'cards' ? (
+            <TestimonialsGrid
+              data={filteredData}
+              groups={groups}
+              onStatusUpdate={handleStatusUpdate}
+              onGroupUpdate={handleGroupUpdate}
+            />
+          ) : (
+            <TestimonialsTableSimple
+              data={filteredData}
+              onStatusUpdate={handleStatusUpdate}
+            />
+          )
+        )}
+      </div>
     </div>
   )
 }

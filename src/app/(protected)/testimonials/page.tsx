@@ -1,102 +1,66 @@
+"use client"
+
+import * as React from "react"
 import { TestimonialsView } from "@/components/testimonials/testimonials-view"
-import { EmptyState } from "@/components/empty-state"
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
-import { db } from "@/db"
-import { users, groups } from "@/db/schema"
-import { eq } from "drizzle-orm"
-import { getUserTestimonials, getUserProject } from "@/lib/testimonials"
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
-export default async function TestimonialsPage() {
-  // Validate session on the server
-  const session = await auth.api.getSession({
-    headers: await headers()
-  });
+interface Group {
+  id: string
+  name: string
+  color: string
+}
 
-  // If no valid session, redirect to login
-  if (!session?.user) {
-    redirect("/login");
-  }
+export default function TestimonialsPage() {
+  const [testimonials, setTestimonials] = React.useState<TestimonialWithProjectAndGroup[]>([])
+  const [groups, setGroups] = React.useState<Group[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
-  // Check onboarding status from database
-  try {
-    const dbUser = await db
-      .select({ onboardingCompleted: users.onboardingCompleted })
-      .from(users)
-      .where(eq(users.id, session.user.id))
-      .limit(1);
+  const fetchData = React.useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-    const onboardingCompleted = dbUser[0]?.onboardingCompleted ?? false;
+      // Fetch testimonials and groups in parallel
+      const [testimonialsResponse, groupsResponse] = await Promise.all([
+        fetch('/api/testimonials'),
+        fetch('/api/groups')
+      ])
 
-    // If user hasn't completed onboarding, redirect to onboarding
-    if (!onboardingCompleted) {
-      redirect("/onboarding");
+      if (!testimonialsResponse.ok) {
+        throw new Error('Failed to fetch testimonials')
+      }
+
+      if (!groupsResponse.ok) {
+        throw new Error('Failed to fetch groups')
+      }
+
+      const [testimonialsData, groupsData] = await Promise.all([
+        testimonialsResponse.json(),
+        groupsResponse.json()
+      ])
+
+      setTestimonials(testimonialsData)
+      setGroups(groupsData)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load data')
+    } finally {
+      setLoading(false)
     }
-  } catch (error) {
-    console.error('Error checking onboarding status:', error);
-    redirect("/onboarding");
-  }
+  }, [])
 
-  // Get user's project and testimonials using shared utilities
-  const userProject = await getUserProject(session.user.id);
-  const testimonialsData = await getUserTestimonials(session.user.id);
+  React.useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
-  // Get groups for this project
-  let projectGroups: Array<{ id: string; name: string; color: string }> = [];
-  if (userProject) {
-    const groupsData = await db
-      .select({
-        id: groups.id,
-        name: groups.name,
-        color: groups.color,
-      })
-      .from(groups)
-      .where(eq(groups.projectId, userProject.id))
-      .orderBy(groups.createdAt);
-
-    // Transform groups to ensure color is never null
-    projectGroups = groupsData.map(group => ({
-      ...group,
-      color: group.color || '#3B82F6' // Provide default color if null
-    }));
-  }
-
-  // Show empty state if no testimonials
-  if (testimonialsData.length === 0) {
-    return (
-      <EmptyState
-        title="😬 Oops! Nothing here 😬 "
-        description="You currently do not have any testimonials yet. Import or Request a few today!"
-        actionLabel="Import testimonials"
-      />
-    )
-  }
-
-  // Show table with testimonials
   return (
-    <div className="flex flex-col gap-6 py-6 md:gap-8 md:py-8">
-      <div className="px-4 lg:px-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Testimonials</h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Manage and review customer testimonials
-              {userProject?.name && (
-                <span className="block mt-1">
-                  Project: <span className="font-medium">{userProject.name}</span>
-                </span>
-              )}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <TestimonialsView
-        data={testimonialsData}
-        groups={projectGroups}
-        projectId={userProject?.id || null}
-      />
-    </div>
+    <TestimonialsView
+      data={testimonials}
+      groups={groups}
+      projectId={null}
+      loading={loading}
+      error={error}
+      onRetry={fetchData}
+    />
   )
 }

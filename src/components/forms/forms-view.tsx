@@ -15,11 +15,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { CardSkeleton, GridSkeleton } from "@/components/ui/loading-skeleton"
 import { Form } from "@/db/types"
 
 export function FormsView() {
   const [forms, setForms] = useState<Form[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -28,14 +30,17 @@ export function FormsView() {
 
   const fetchForms = async () => {
     try {
+      setError(null)
       const response = await fetch('/api/forms')
       if (response.ok) {
         const data = await response.json()
         setForms(data)
       } else {
+        setError('Failed to fetch forms')
         toast.error('Failed to fetch forms')
       }
     } catch (error) {
+      setError('Failed to fetch forms')
       toast.error('Failed to fetch forms')
     } finally {
       setLoading(false)
@@ -108,17 +113,9 @@ export function FormsView() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header - Always visible immediately */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Forms</h1>
@@ -132,8 +129,27 @@ export function FormsView() {
         </Button>
       </div>
 
-      {/* Forms Grid */}
-      {forms.length === 0 ? (
+      {/* Forms Grid - Progressive loading */}
+      {loading ? (
+        <GridSkeleton count={6}>
+          <CardSkeleton />
+        </GridSkeleton>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Plus className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Failed to load forms</h3>
+            <p className="text-muted-foreground mb-4 max-w-sm">
+              {error}
+            </p>
+            <Button onClick={fetchForms} className="cursor-pointer">
+              Try Again
+            </Button>
+          </div>
+        </div>
+      ) : forms.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
           <div className="text-center">
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
