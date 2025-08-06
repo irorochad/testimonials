@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, jsonb, integer, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, jsonb, integer, boolean, unique } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Users table
@@ -105,6 +105,34 @@ export const subscriptions = pgTable('subscriptions', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Forms table
+export const forms = pgTable('forms', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  slug: varchar('slug', { length: 100 }).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  fields: jsonb('fields').default('[]').notNull(),
+  styling: jsonb('styling').default('{}').notNull(),
+  settings: jsonb('settings').default('{}').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  projectSlugUnique: unique().on(table.projectId, table.slug),
+}));
+
+// Form submissions table
+export const formSubmissions = pgTable('form_submissions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  formId: uuid('form_id').notNull().references(() => forms.id, { onDelete: 'cascade' }),
+  testimonialId: uuid('testimonial_id').references(() => testimonials.id, { onDelete: 'set null' }),
+  data: jsonb('data').default('{}').notNull(),
+  ipAddress: varchar('ip_address', { length: 45 }),
+  userAgent: text('user_agent'),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Better-auth required tables
 export const session = pgTable('session', {
   id: varchar('id', { length: 255 }).primaryKey(),
@@ -158,6 +186,7 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
   groups: many(groups),
   integrations: many(integrations),
   invitations: many(invitations),
+  forms: many(forms),
 }));
 
 export const groupsRelations = relations(groups, ({ one, many }) => ({
@@ -201,5 +230,24 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   user: one(users, {
     fields: [subscriptions.userId],
     references: [users.id],
+  }),
+}));
+
+export const formsRelations = relations(forms, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [forms.projectId],
+    references: [projects.id],
+  }),
+  submissions: many(formSubmissions),
+}));
+
+export const formSubmissionsRelations = relations(formSubmissions, ({ one }) => ({
+  form: one(forms, {
+    fields: [formSubmissions.formId],
+    references: [forms.id],
+  }),
+  testimonial: one(testimonials, {
+    fields: [formSubmissions.testimonialId],
+    references: [testimonials.id],
   }),
 }));

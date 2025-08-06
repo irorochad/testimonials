@@ -10,6 +10,9 @@ import {
   IconInnerShadowTop,
   IconSettings,
   IconUsers,
+  IconForms,
+  IconMap,
+  IconUsersGroup,
 } from "@tabler/icons-react"
 
 import { NavSecondary } from "@/components/nav-secondary"
@@ -47,14 +50,20 @@ const data = {
         {
           title: "All Testimonials",
           url: "/testimonials",
+          icon: IconMap,
         },
         {
           title: "Groups",
           url: "/testimonials/groups",
+          icon: IconUsersGroup,
         },
       ],
     },
-
+    {
+      title: "Forms",
+      url: "/forms",
+      icon: IconForms,
+    },
     {
       title: "Analytics",
       url: "#",

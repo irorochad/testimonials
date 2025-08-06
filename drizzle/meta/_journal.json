@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1753835419458,
-      "tag": "0000_productive_killer_shrike",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1753871569097,
-      "tag": "0001_flaky_justin_hammer",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1754129179018,
-      "tag": "0002_thin_senator_kelly",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1754171184825,
-      "tag": "0003_shocking_ben_grimm",
+      "when": 1754515065982,
+      "tag": "0000_living_surge",
       "breakpoints": true
     }
   ]

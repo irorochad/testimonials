@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import type { users, projects, groups, testimonials, integrations, invitations, subscriptions } from './schema';
+import type { users, projects, groups, testimonials, integrations, invitations, subscriptions, forms, formSubmissions } from './schema';
 
 // User types
 export type User = InferSelectModel<typeof users>;
@@ -28,6 +28,14 @@ export type NewInvitation = InferInsertModel<typeof invitations>;
 // Subscription types
 export type Subscription = InferSelectModel<typeof subscriptions>;
 export type NewSubscription = InferInsertModel<typeof subscriptions>;
+
+// Form types
+export type Form = InferSelectModel<typeof forms>;
+export type NewForm = InferInsertModel<typeof forms>;
+
+// Form submission types
+export type FormSubmission = InferSelectModel<typeof formSubmissions>;
+export type NewFormSubmission = InferInsertModel<typeof formSubmissions>;
 
 // Public page settings interface
 export interface PublicPageSettings {
@@ -243,3 +251,128 @@ export const IntegrationStatus = {
   ERROR: 'error',
   PAUSED: 'paused',
 } as const;
+
+// Form builder types
+export interface FormField {
+  id: string;
+  type: 'text' | 'email' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'file' | 'rating' | 'number' | 'url' | 'phone';
+  label: string;
+  placeholder?: string;
+  required: boolean;
+  options?: string[]; // For select, radio, checkbox
+  validation?: {
+    minLength?: number;
+    maxLength?: number;
+    pattern?: string;
+    min?: number;
+    max?: number;
+  };
+  conditional?: {
+    field: string;
+    value: string | string[];
+    operator: 'equals' | 'not_equals' | 'contains' | 'not_contains';
+  };
+  description?: string;
+  defaultValue?: string;
+}
+
+export interface FormStyling {
+  primaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  fontFamily: string;
+  borderRadius: number;
+  logoUrl?: string;
+  customCSS?: string;
+  layout: 'single-column' | 'two-column';
+  theme: 'light' | 'dark' | 'auto';
+}
+
+export interface FormSettings {
+  redirectUrl?: string;
+  thankYouMessage?: string;
+  allowMultipleSubmissions: boolean;
+  requireEmailVerification: boolean;
+  enableSpamProtection: boolean;
+  maxSubmissions?: number;
+  expirationDate?: Date;
+  enableAnalytics: boolean;
+  notificationEmail?: string;
+  autoApprove: boolean;
+  collectIpAddress: boolean;
+  enableFileUploads: boolean;
+  maxFileSize: number; // in MB
+  allowedFileTypes: string[];
+}
+
+export interface FormWithStats extends Form {
+  submissionCount: number;
+  conversionRate: number;
+  averageCompletionTime: number;
+  lastSubmissionAt?: Date;
+}
+
+export interface FormSubmissionWithData extends FormSubmission {
+  form: {
+    name: string;
+    fields: FormField[];
+  };
+}
+
+// Form builder field types
+export const FormFieldTypes = {
+  TEXT: 'text',
+  EMAIL: 'email',
+  TEXTAREA: 'textarea',
+  SELECT: 'select',
+  RADIO: 'radio',
+  CHECKBOX: 'checkbox',
+  FILE: 'file',
+  RATING: 'rating',
+  NUMBER: 'number',
+  URL: 'url',
+  PHONE: 'phone',
+} as const;
+
+export type FormFieldType = typeof FormFieldTypes[keyof typeof FormFieldTypes];
+
+// Form templates
+export interface FormTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: 'testimonial' | 'feedback' | 'survey' | 'contact';
+  fields: FormField[];
+  styling: Partial<FormStyling>;
+  settings: Partial<FormSettings>;
+  preview?: string;
+}
+
+// Form analytics
+export interface FormAnalytics {
+  formId: string;
+  totalViews: number;
+  totalSubmissions: number;
+  conversionRate: number;
+  averageCompletionTime: number;
+  dropOffPoints: Array<{
+    fieldId: string;
+    fieldLabel: string;
+    dropOffRate: number;
+  }>;
+  submissionsByDay: Array<{
+    date: string;
+    submissions: number;
+    views: number;
+  }>;
+  deviceBreakdown: {
+    desktop: number;
+    mobile: number;
+    tablet: number;
+  };
+  trafficSources: Array<{
+    source: string;
+    visits: number;
+    conversions: number;
+  }>;
+}
