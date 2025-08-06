@@ -49,6 +49,7 @@ export const testimonials = pgTable('testimonials', {
   id: uuid('id').primaryKey().defaultRandom(),
   projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
   groupId: uuid('group_id').references(() => groups.id, { onDelete: 'set null' }), // Allow null for uncategorized
+  slug: varchar('slug', { length: 6 }).notNull(),
   customerName: varchar('customer_name', { length: 255 }).notNull(),
   customerEmail: varchar('customer_email', { length: 255 }).notNull(),
   customerCompany: varchar('customer_company', { length: 255 }),
@@ -63,7 +64,9 @@ export const testimonials = pgTable('testimonials', {
   tags: jsonb('tags'), // AI-generated tags for contextual display
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   approvedAt: timestamp('approved_at', { withTimezone: true }),
-});
+}, (table) => ({
+  testimonialsProjectSlugUnique: unique('testimonials_proj_slug_uniq').on(table.projectId, table.slug),
+}));
 
 // Integrations table
 export const integrations = pgTable('integrations', {
@@ -111,7 +114,7 @@ export const forms = pgTable('forms', {
   projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  slug: varchar('slug', { length: 100 }).notNull(),
+  slug: varchar('slug', { length: 6 }).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
   fields: jsonb('fields').default('[]').notNull(),
   styling: jsonb('styling').default('{}').notNull(),
@@ -119,7 +122,7 @@ export const forms = pgTable('forms', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => ({
-  projectSlugUnique: unique().on(table.projectId, table.slug),
+  formsProjectSlugUnique: unique('forms_proj_slug_uniq').on(table.projectId, table.slug),
 }));
 
 // Form submissions table

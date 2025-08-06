@@ -5,30 +5,17 @@ import { db } from '@/db'
 import { forms, projects } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { FormField, FormStyling, FormSettings } from '@/db/types'
-
-// Generate a slug from form name
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim()
-}
+import { generateUniqueSlug } from '@/lib/slug-generator'
 
 // Check if slug is available within project
-async function isSlugAvailable(slug: string, projectId: string, formId?: string): Promise<boolean> {
+async function checkSlugExists(slug: string, projectId: string): Promise<boolean> {
   const existing = await db
     .select({ id: forms.id })
     .from(forms)
-    .where(
-      formId 
-        ? and(eq(forms.projectId, projectId), eq(forms.slug, slug), eq(forms.id, formId))
-        : and(eq(forms.projectId, projectId), eq(forms.slug, slug))
-    )
+    .where(and(eq(forms.projectId, projectId), eq(forms.slug, slug)))
     .limit(1)
 
-  return existing.length === 0
+  return existing.length > 0
 }
 
 export async function GET() {
@@ -95,14 +82,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    // Generate unique slug
-    let slug = generateSlug(name)
-    let counter = 1
-    const baseSlug = slug
-    while (!(await isSlugAvailable(slug, userProject[0].id))) {
-      slug = `${baseSlug}-${counter}`
-      counter++
-    }
+    // Generate unique 6-character slug
+    const slug = await generateUniqueSlug(async (slug: string) => {
+      return await checkSlugExists(slug, userProject[0].id)
+    })
 
     // Create form with default values
     const defaultStyling: FormStyling = {

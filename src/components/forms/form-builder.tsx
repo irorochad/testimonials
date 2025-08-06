@@ -42,9 +42,14 @@ const FIELD_TYPES = [
     { type: FormFieldTypes.URL, label: "Website", icon: LinkIcon },
 ]
 
-export function FormBuilder() {
+interface FormBuilderProps {
+    formId?: string
+}
+
+export function FormBuilder({ formId }: FormBuilderProps) {
     const [formName, setFormName] = useState("New Testimonial Form")
     const [formDescription, setFormDescription] = useState("")
+    const [loading, setLoading] = useState(!!formId) // Loading if editing existing form
     const [fields, setFields] = useState<FormField[]>([
         {
             id: "name",
@@ -71,6 +76,35 @@ export function FormBuilder() {
     const [selectedField, setSelectedField] = useState<FormField | null>(null)
     const [saving, setSaving] = useState(false)
     const router = useRouter()
+
+    // Load existing form data when editing
+    useEffect(() => {
+        if (formId) {
+            fetchFormData()
+        }
+    }, [formId])
+
+    const fetchFormData = async () => {
+        try {
+            setLoading(true)
+            const response = await fetch(`/api/forms/${formId}`)
+            
+            if (response.ok) {
+                const formData = await response.json()
+                setFormName(formData.name)
+                setFormDescription(formData.description || "")
+                setFields(formData.fields || [])
+            } else {
+                toast.error("Failed to load form data")
+                router.push('/forms')
+            }
+        } catch (error) {
+            toast.error("Failed to load form data")
+            router.push('/forms')
+        } finally {
+            setLoading(false)
+        }
+    }
 
     // Generate unique field ID
     const generateFieldId = (type: string) => {
@@ -136,8 +170,11 @@ export function FormBuilder() {
 
         setSaving(true)
         try {
-            const response = await fetch('/api/forms', {
-                method: 'POST',
+            const url = formId ? `/api/forms/${formId}` : '/api/forms'
+            const method = formId ? 'PATCH' : 'POST'
+            
+            const response = await fetch(url, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -145,11 +182,12 @@ export function FormBuilder() {
                     name: formName,
                     description: formDescription,
                     fields,
+                    isActive: true, // Auto-publish forms when saved
                 }),
             })
 
             if (response.ok) {
-                toast.success("Form saved successfully!")
+                toast.success(formId ? "Form updated successfully!" : "Form created successfully!")
                 router.push('/forms')
             } else {
                 const error = await response.json()
@@ -166,6 +204,17 @@ export function FormBuilder() {
     const handlePreview = () => {
         // TODO: Implement preview functionality
         toast.info("Preview functionality coming soon!")
+    }
+
+    if (loading) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-muted-foreground">Loading form data...</p>
+                </div>
+            </div>
+        )
     }
 
     return (

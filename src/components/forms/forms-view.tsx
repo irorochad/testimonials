@@ -57,13 +57,13 @@ export function FormsView() {
 
   const handleViewForm = (slug: string) => {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
-    const formUrl = `${baseUrl}/collect/${slug}`
+    const formUrl = `${baseUrl}/forms/view/${slug}`
     window.open(formUrl, '_blank')
   }
 
   const handleCopyLink = (slug: string) => {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
-    const formUrl = `${baseUrl}/collect/${slug}`
+    const formUrl = `${baseUrl}/forms/view/${slug}`
     navigator.clipboard.writeText(formUrl)
     toast.success('Form link copied to clipboard!')
   }
