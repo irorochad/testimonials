@@ -4,6 +4,7 @@ import { db } from '@/db'
 import { groups, projects, testimonials } from '@/db/schema'
 import { eq, and, count } from 'drizzle-orm'
 import { z } from 'zod'
+import { generateUniqueSlug } from '@/lib/slug-generator'
 
 // Validation schema for creating a group
 const createGroupSchema = z.object({
@@ -39,6 +40,7 @@ export async function GET(request: NextRequest) {
       .select({
         id: groups.id,
         projectId: groups.projectId,
+        slug: groups.slug,
         name: groups.name,
         description: groups.description,
         color: groups.color,
@@ -49,7 +51,7 @@ export async function GET(request: NextRequest) {
       .from(groups)
       .leftJoin(testimonials, eq(groups.id, testimonials.groupId))
       .where(eq(groups.projectId, userProject[0].id))
-      .groupBy(groups.id, groups.projectId, groups.name, groups.description, groups.color, groups.createdAt, groups.updatedAt)
+      .groupBy(groups.id, groups.projectId, groups.slug, groups.name, groups.description, groups.color, groups.createdAt, groups.updatedAt)
       .orderBy(groups.createdAt)
 
     return NextResponse.json(groupsWithCounts)
@@ -88,11 +90,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
+    // Generate unique 6-character slug for the group
+    const slug = await generateUniqueSlug(async (slug: string) => {
+      const existing = await db
+        .select({ id: groups.id })
+        .from(groups)
+        .where(and(
+          eq(groups.projectId, userProject[0].id),
+          eq(groups.slug, slug)
+        ))
+        .limit(1)
+      return existing.length > 0
+    })
+
     // Create the group
     const newGroup = await db
       .insert(groups)
       .values({
         projectId: userProject[0].id,
+        slug,
         name: validatedData.name,
         description: validatedData.description || null,
         color: validatedData.color,

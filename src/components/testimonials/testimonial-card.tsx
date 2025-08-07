@@ -227,7 +227,7 @@ export function TestimonialCard({ testimonial, groups, onStatusUpdate, onGroupUp
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-             <Link href={`/testimonials/${testimonial.id}`}>
+             <Link href={`/testimonials/view/${testimonial.id}`}>
             <CardContent className="p-6">
                 {/* Header with customer info */}
                 <div className="flex items-start justify-between mb-4">

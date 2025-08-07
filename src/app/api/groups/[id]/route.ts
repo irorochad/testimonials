@@ -37,6 +37,7 @@ export async function PATCH(
             .select({
                 id: groups.id,
                 projectId: groups.projectId,
+                slug: groups.slug,
             })
             .from(groups)
             .innerJoin(projects, eq(groups.projectId, projects.id))
@@ -101,6 +102,7 @@ export async function DELETE(
             .select({
                 id: groups.id,
                 projectId: groups.projectId,
+                slug: groups.slug,
             })
             .from(groups)
             .innerJoin(projects, eq(groups.projectId, projects.id))

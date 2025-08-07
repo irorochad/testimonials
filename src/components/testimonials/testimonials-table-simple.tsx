@@ -222,7 +222,7 @@ const createColumns = (onStatusUpdate: (id: string, status: string) => void): Co
           {/* Customer Info */}
           <div className="space-y-1 min-w-0 flex-1">
             <Link
-              href={`/testimonials/${testimonial.id}`}
+              href={`/testimonials/view/${testimonial.id}`}
               className="font-medium text-primary hover:underline cursor-pointer block truncate"
             >
               {testimonial.customerName}

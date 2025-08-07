@@ -1,250 +1,202 @@
-'use client'
+"use client"
 
-import { PublicTestimonial, PublicPageSettings } from '@/db/types'
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Star, ArrowLeft, ExternalLink } from 'lucide-react'
-import Link from 'next/link'
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Star, Building, User, Calendar } from "lucide-react"
+import { PublicPageSettings } from "@/db/types"
+
+/**
+ * PublicTestimonialView Component
+ * 
+ * Displays a single testimonial in a clean, public-facing format.
+ * Used on the /testimonials/[slug] route for direct testimonial sharing.
+ * 
+ * Features:
+ * - Clean, focused testimonial display
+ * - Customer information with avatar
+ * - Star rating display
+ * - Company and title information
+ * - Responsive design
+ * - Professional styling
+ */
 
 interface PublicTestimonialViewProps {
-  project: {
+  testimonial: {
     id: string
-    name: string
-    description: string | null
-    brandName: string | null
-    websiteUrl: string | null
-    settings: PublicPageSettings
+    slug: string
+    customerName: string
+    customerCompany: string | null
+    customerTitle: string | null
+    customerImageUrl: string | null
+    content: string
+    rating: number | null
+    createdAt: Date
+    projectName: string
+    projectId: string
+    groupName: string | null
+    groupColor: string | null
+    projectPublicPageSettings: unknown
   }
-  testimonial: PublicTestimonial
-  slug: string
 }
 
-export function PublicTestimonialView({ project, testimonial, slug }: PublicTestimonialViewProps) {
-  const { settings } = project
-  const brandName = project.brandName || project.name
+export function PublicTestimonialView({ testimonial }: PublicTestimonialViewProps) {
+  // Parse theme settings from project public page settings
+  const settings = (testimonial.projectPublicPageSettings as PublicPageSettings) || {
+    theme: 'light',
+    primaryColor: '#3B82F6',
+    layout: 'grid',
+    showRatings: true,
+    showCompany: true,
+    showTitle: true,
+    showImages: true,
+  }
 
-  const initials = testimonial.customerName
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
+  // Determine if we should use dark theme
+  const isDark = settings.theme === 'dark'
+  
+  // Theme-based CSS classes
+  const themeClasses = {
+    background: isDark ? 'bg-gray-900' : 'bg-gray-50',
+    cardBackground: isDark ? 'bg-gray-800' : 'bg-white',
+    textPrimary: isDark ? 'text-white' : 'text-gray-900',
+    textSecondary: isDark ? 'text-gray-300' : 'text-gray-600',
+    textMuted: isDark ? 'text-gray-400' : 'text-gray-500',
+    border: isDark ? 'border-gray-700' : 'border-gray-100',
+    avatarBg: isDark ? 'bg-gray-700' : 'bg-gray-200',
+    avatarBorder: isDark ? 'border-gray-600' : 'border-gray-100',
+  }
+
+  /**
+   * Render star rating display with theme support
+   */
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`w-5 h-5 ${
+              star <= rating 
+                ? 'text-yellow-400 fill-yellow-400' 
+                : isDark ? 'text-gray-600' : 'text-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+    )
+  }
 
   return (
-    <div 
-      className={`min-h-screen ${
-        settings.theme === 'dark' ? 'dark' : 
-        settings.theme === 'light' ? '' : 
-        '' // auto/system default
-      }`}
-      style={{
-        '--primary-color': settings.primaryColor,
-        backgroundColor: settings.theme === 'dark' ? '#0f172a' : 
-                        settings.theme === 'light' ? '#ffffff' : 
-                        'var(--background)', // system default
-        color: settings.theme === 'dark' ? '#f8fafc' : 
-               settings.theme === 'light' ? '#0f172a' : 
-               'var(--foreground)', // system default
-      } as React.CSSProperties}
-    >
-      {/* Header */}
-      <div 
-        className="border-b"
-        style={{
-          backgroundColor: settings.theme === 'dark' ? '#1e293b' : '#ffffff',
-          borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
-        }}
-      >
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
-          <div className="flex items-center justify-between">
-            <Link href={`/p/${slug}`}>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="gap-2"
-                style={{
-                  color: settings.theme === 'dark' ? '#f8fafc' : '#0f172a',
-                  backgroundColor: 'transparent'
-                }}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to all testimonials
-              </Button>
-            </Link>
-
-            {project.websiteUrl && (
-              <Link
-                href={project.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="gap-2"
-                  style={{
-                    borderColor: settings.primaryColor,
-                    color: settings.primaryColor,
-                    backgroundColor: 'transparent'
-                  }}
-                >
-                  Visit {brandName}
-                  <ExternalLink className="w-4 h-4" />
-                </Button>
-              </Link>
-            )}
-          </div>
+    <div className={`min-h-screen ${themeClasses.background} py-12 px-4`}>
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className={`text-3xl font-bold ${themeClasses.textPrimary} mb-4`}>
+            Customer Testimonial
+          </h1>
+          <p className={`text-lg ${themeClasses.textSecondary}`}>
+            From {testimonial.projectName}
+          </p>
         </div>
-      </div>
 
-      {/* Testimonial */}
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <Card 
-          className="mx-auto max-w-2xl"
-          style={{
-            backgroundColor: settings.theme === 'dark' ? '#1f2937' : '#ffffff',
-            borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
-          }}
-        >
-          <CardContent className="p-8">
-            <div className="space-y-6">
-              {/* Rating */}
-              {settings.showRatings && testimonial.rating && (
-                <div className="flex items-center justify-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-6 h-6"
-                      style={{
-                        fill: i < testimonial.rating! ? settings.primaryColor : 'transparent',
-                        color: i < testimonial.rating! ? settings.primaryColor : '#d1d5db'
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Content */}
-              <blockquote 
-                className="text-xl leading-relaxed text-center"
-                style={{
-                  color: settings.theme === 'dark' ? '#f9fafb' : '#111827'
-                }}
-              >
-                &ldquo;{testimonial.content}&rdquo;
-              </blockquote>
-
-              {/* Customer Info */}
-              <div 
-                className="flex flex-col items-center gap-4 pt-6 border-t"
-                style={{
-                  borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
-                }}
-              >
-                {settings.showImages && (
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage 
-                      src={testimonial.customerImageUrl} 
-                      alt={testimonial.customerName} 
-                    />
-                    <AvatarFallback 
-                      className="text-lg"
-                      style={{
-                        backgroundColor: settings.primaryColor,
-                        color: '#ffffff'
-                      }}
-                    >
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
+        {/* Main Testimonial Card */}
+        <Card className={`shadow-xl border-0 mb-8 ${themeClasses.cardBackground}`}>
+          <CardContent className="p-8 md:p-12">
+            {/* Customer Info Header */}
+            <div className="flex items-start gap-6 mb-8">
+              {/* Customer Avatar */}
+              <div className="flex-shrink-0">
+                {testimonial.customerImageUrl ? (
+                  <img
+                    src={testimonial.customerImageUrl}
+                    alt={testimonial.customerName}
+                    className={`w-16 h-16 rounded-full object-cover border-4 ${themeClasses.avatarBorder}`}
+                  />
+                ) : (
+                  <div className={`w-16 h-16 rounded-full ${themeClasses.avatarBg} flex items-center justify-center border-4 ${themeClasses.avatarBorder}`}>
+                    <User className={`w-8 h-8 ${themeClasses.textMuted}`} />
+                  </div>
                 )}
+              </div>
+
+              {/* Customer Details */}
+              <div className="flex-1">
+                <h2 className={`text-2xl font-semibold ${themeClasses.textPrimary} mb-2`}>
+                  {testimonial.customerName}
+                </h2>
                 
-                <div className="text-center">
-                  <p 
-                    className="font-semibold text-lg"
-                    style={{
-                      color: settings.theme === 'dark' ? '#f9fafb' : '#111827'
-                    }}
-                  >
-                    {testimonial.customerName}
-                  </p>
-                  
-                  {(settings.showTitle || settings.showCompany) && (
-                    <div 
-                      style={{
-                        color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280'
-                      }}
-                    >
-                      {settings.showTitle && testimonial.customerTitle && (
-                        <span>{testimonial.customerTitle}</span>
-                      )}
-                      {settings.showTitle && testimonial.customerTitle && 
-                       settings.showCompany && testimonial.customerCompany && (
-                        <span> at </span>
-                      )}
-                      {settings.showCompany && testimonial.customerCompany && (
-                        <span>{testimonial.customerCompany}</span>
-                      )}
+                {/* Company and Title */}
+                <div className="flex flex-wrap items-center gap-4 mb-4">
+                  {testimonial.customerCompany && (
+                    <div className={`flex items-center gap-2 ${themeClasses.textSecondary}`}>
+                      <Building className="w-4 h-4" />
+                      <span className="font-medium">{testimonial.customerCompany}</span>
+                    </div>
+                  )}
+                  {testimonial.customerTitle && (
+                    <div className={themeClasses.textSecondary}>
+                      <span>{testimonial.customerTitle}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Date */}
-                <div 
-                  className="text-sm"
-                  style={{
-                    color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280'
+                {/* Rating */}
+                {testimonial.rating && (
+                  <div className="flex items-center gap-3">
+                    {renderStars(testimonial.rating)}
+                    <span className={`text-sm ${themeClasses.textSecondary} font-medium`}>
+                      {testimonial.rating}/5 stars
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Testimonial Content */}
+            <div className="mb-8">
+              <blockquote className={`text-xl leading-relaxed ${themeClasses.textPrimary} italic`}>
+                "{testimonial.content}"
+              </blockquote>
+            </div>
+
+            {/* Footer Info */}
+            <div className={`flex flex-wrap items-center justify-between pt-6 border-t ${themeClasses.border}`}>
+              {/* Group Badge */}
+              {testimonial.groupName && (
+                <Badge 
+                  variant="outline" 
+                  className="mb-2 md:mb-0"
+                  style={{ 
+                    borderColor: testimonial.groupColor || '#3B82F6',
+                    color: testimonial.groupColor || '#3B82F6'
                   }}
                 >
+                  {testimonial.groupName}
+                </Badge>
+              )}
+
+              {/* Date */}
+              <div className={`flex items-center gap-2 text-sm ${themeClasses.textMuted}`}>
+                <Calendar className="w-4 h-4" />
+                <span>
                   {new Date(testimonial.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                   })}
-                </div>
+                </span>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Footer */}
-      <div 
-        className="border-t mt-12"
-        style={{
-          backgroundColor: settings.theme === 'dark' ? '#0f172a' : '#f9fafb',
-          borderColor: settings.theme === 'dark' ? '#374151' : '#e5e7eb'
-        }}
-      >
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
-          <div 
-            className="text-center text-sm"
-            style={{
-              color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280'
-            }}
-          >
-            <p>Powered by {brandName}</p>
-            {project.websiteUrl && (
-              <Link
-                href={project.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors"
-                style={{
-                  color: settings.primaryColor
-                }}
-              >
-                {project.websiteUrl.replace(/^https?:\/\//, '')}
-              </Link>
-            )}
-          </div>
+        {/* Footer */}
+        <div className="text-center">
+          <p className={`text-sm ${themeClasses.textMuted}`}>
+            Powered by {testimonial.projectName}
+          </p>
         </div>
       </div>
-
-      {/* Custom CSS */}
-      {settings.customCSS && (
-        <style dangerouslySetInnerHTML={{ __html: settings.customCSS }} />
-      )}
     </div>
   )
 }

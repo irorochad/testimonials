@@ -12,6 +12,9 @@ interface PublicFormPageProps {
 }
 
 export default async function PublicFormPage({ params }: PublicFormPageProps) {
+  // Await params to fix Next.js 15 async params requirement
+  const { slug } = await params
+  
   // Get the form by slug
   const form = await db
     .select({
@@ -29,7 +32,7 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
     .from(forms)
     .innerJoin(projects, eq(forms.projectId, projects.id))
     .where(and(
-      eq(forms.slug, params.slug),
+      eq(forms.slug, slug),
       eq(forms.isActive, true)
     ))
     .limit(1)

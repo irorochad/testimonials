@@ -109,15 +109,33 @@ export function ExportDropdown({
     const firstTestimonial = testimonials[0]
 
     // Check if public sharing is enabled
-    if (!firstTestimonial.projectIsPublic || !firstTestimonial.projectPublicSlug) {
+    if (!firstTestimonial.projectIsPublic) {
       toast.info('Enable public sharing in Settings first')
       window.location.href = '/settings?tab=public-sharing'
       return
     }
 
-    // Generate public URL
+    // Generate direct URLs using slugs - no more generic project pages!
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
-    const publicUrl = `${baseUrl}/p/${firstTestimonial.projectPublicSlug}`
+    let publicUrl: string
+
+    // Priority 1: If we have a group name and all testimonials are from the same group, share the group URL
+    if (groupName && testimonials.length > 0 && testimonials[0].groupSlug) {
+      const allSameGroup = testimonials.every(t => t.groupSlug === testimonials[0].groupSlug)
+      if (allSameGroup) {
+        // Direct group URL: website.com/groups/[slug]
+        publicUrl = `${baseUrl}/groups/${testimonials[0].groupSlug}`
+      } else {
+        // Mixed groups - share first testimonial directly
+        publicUrl = `${baseUrl}/testimonials/${firstTestimonial.slug}`
+      }
+    } else if (testimonials.length === 1) {
+      // Priority 2: Single testimonial - direct testimonial URL: website.com/testimonials/[slug]
+      publicUrl = `${baseUrl}/testimonials/${firstTestimonial.slug}`
+    } else {
+      // Priority 3: Multiple testimonials without specific group - share first testimonial
+      publicUrl = `${baseUrl}/testimonials/${firstTestimonial.slug}`
+    }
 
     // Copy URL to clipboard and show success message
     navigator.clipboard.writeText(publicUrl)

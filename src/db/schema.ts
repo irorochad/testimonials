@@ -37,12 +37,15 @@ export const projects = pgTable('projects', {
 export const groups = pgTable('groups', {
   id: uuid('id').primaryKey().defaultRandom(),
   projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  slug: varchar('slug', { length: 6 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   color: varchar('color', { length: 7 }).default('#3B82F6'), // Hex color for visual distinction
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => ({
+  groupsProjectSlugUnique: unique('groups_proj_slug_uniq').on(table.projectId, table.slug),
+}));
 
 // Testimonials table
 export const testimonials = pgTable('testimonials', {

@@ -5,6 +5,7 @@ import { eq, and } from "drizzle-orm"
 // Extended testimonial type with project and group info for UI components
 export interface TestimonialWithProjectAndGroup {
   id: string
+  slug: string
   customerName: string
   customerEmail: string
   customerCompany: string | null
@@ -26,6 +27,7 @@ export interface TestimonialWithProjectAndGroup {
   groupId: string | null
   groupName: string | null
   groupColor: string | null
+  groupSlug: string | null
 }
 
 // Get all testimonials for a user's project
@@ -46,6 +48,7 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
     const result = await db
       .select({
         id: testimonials.id,
+        slug: testimonials.slug,
         customerName: testimonials.customerName,
         customerEmail: testimonials.customerEmail,
         customerCompany: testimonials.customerCompany,
@@ -67,6 +70,7 @@ export async function getUserTestimonials(userId: string): Promise<TestimonialWi
         groupId: testimonials.groupId,
         groupName: groups.name,
         groupColor: groups.color,
+        groupSlug: groups.slug,
       })
       .from(testimonials)
       .innerJoin(projects, eq(testimonials.projectId, projects.id))
@@ -91,6 +95,7 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
     const result = await db
       .select({
         id: testimonials.id,
+        slug: testimonials.slug,
         customerName: testimonials.customerName,
         customerEmail: testimonials.customerEmail,
         customerCompany: testimonials.customerCompany,
@@ -112,6 +117,7 @@ export async function getUserTestimonial(userId: string, testimonialId: string):
         groupId: testimonials.groupId,
         groupName: groups.name,
         groupColor: groups.color,
+        groupSlug: groups.slug,
       })
       .from(testimonials)
       .innerJoin(projects, eq(testimonials.projectId, projects.id))
