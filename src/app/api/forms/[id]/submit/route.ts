@@ -6,9 +6,10 @@ import { generateUniqueSlug } from '@/lib/slug-generator'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { data } = body
 
@@ -26,7 +27,7 @@ export async function POST(
         isActive: forms.isActive,
       })
       .from(forms)
-      .where(eq(forms.id, params.id))
+      .where(eq(forms.id, id))
       .limit(1)
 
     if (!form[0]) {
@@ -38,9 +39,9 @@ export async function POST(
     }
 
     // Get client IP and user agent
-    const ipAddress = request.headers.get('x-forwarded-for') || 
-                     request.headers.get('x-real-ip') || 
-                     'unknown'
+    const ipAddress = request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
     // Create form submission record
@@ -55,12 +56,19 @@ export async function POST(
       .returning()
 
     // Create testimonial from form submission
+    console.log('Received form data:', data)
+    
     const customerName = data.name || data.customerName || 'Anonymous'
     const customerEmail = data.email || data.customerEmail || ''
     const content = data.testimonial || data.content || data.message || ''
     const rating = data.rating ? parseInt(data.rating) : null
     const customerCompany = data.company || data.customerCompany || null
-    const customerTitle = data.title || data.customerTitle || null
+    const customerTitle = data.position || data.title || data.customerTitle || null
+    // Find the image field dynamically (it might have a generated ID)
+    const imageField = Object.keys(data).find(key => key.startsWith('file_') || key === 'profile_image')
+    const customerImageUrl = imageField ? data[imageField] : (data.profile_image || data.customerImageUrl || null)
+    
+    console.log('Extracted customerImageUrl:', customerImageUrl)
 
     if (content && customerEmail) {
       // Generate unique slug for testimonial
@@ -85,6 +93,7 @@ export async function POST(
           customerEmail,
           customerCompany,
           customerTitle,
+          customerImageUrl,
           content,
           rating,
           status: 'pending', // Forms submissions start as pending
@@ -104,9 +113,9 @@ export async function POST(
         .where(eq(formSubmissions.id, submission[0].id))
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Form submitted successfully' 
+    return NextResponse.json({
+      success: true,
+      message: 'Form submitted successfully'
     })
 
   } catch (error) {
