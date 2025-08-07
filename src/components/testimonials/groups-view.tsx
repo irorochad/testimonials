@@ -46,9 +46,12 @@ export function GroupsView({}: GroupsViewProps) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [allTestimonials, setAllTestimonials] = useState<any[]>([])
+    // Modal state management for group creation and editing
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [editingGroup, setEditingGroup] = useState<Group | null>(null)
+    
+    // Loading states for create and edit operations
     const [isCreating, setIsCreating] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [formData, setFormData] = useState({
@@ -179,6 +182,10 @@ export function GroupsView({}: GroupsViewProps) {
         }
     }
 
+    /**
+     * Opens the edit dialog for a specific group
+     * Pre-fills the form with the group's current data
+     */
     const openEditDialog = (group: Group) => {
         setEditingGroup(group)
         setFormData({
@@ -189,6 +196,11 @@ export function GroupsView({}: GroupsViewProps) {
         setIsEditDialogOpen(true)
     }
 
+    /**
+     * Opens the create dialog for a new group
+     * Resets the form to default values
+     * This function is called from both the header button and empty state
+     */
     const openCreateDialog = () => {
         resetForm()
         setIsCreateDialogOpen(true)

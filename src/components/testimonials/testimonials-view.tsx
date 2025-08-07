@@ -30,6 +30,7 @@ import { TestimonialsTableSimple } from "./testimonials-table-simple"
 import { EmptyState } from "@/components/empty-state"
 import { TestimonialCardSkeleton, TableRowSkeleton, GridSkeleton } from "@/components/ui/loading-skeleton"
 import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
+import { TestimonialCreateModal } from "@/components/modals/testimonial-create-modal"
 
 interface Group {
   id: string
@@ -61,6 +62,9 @@ export function TestimonialsView({
   const [searchTerm, setSearchTerm] = React.useState('')
   const [statusFilter, setStatusFilter] = React.useState<string>('all')
   const [sourceFilter, setSourceFilter] = React.useState<string>('all')
+  
+  // State for testimonial create modal
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false)
 
   // Update data when initialData changes
   React.useEffect(() => {
@@ -223,7 +227,12 @@ export function TestimonialsView({
             </DropdownMenu>
           )}
 
-          <Button variant="outline" size="sm" className="cursor-pointer">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="cursor-pointer"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
             <IconPlus className="w-4 h-4" />
             <span className="hidden lg:inline ml-2">Add Testimonial</span>
           </Button>
@@ -292,10 +301,7 @@ export function TestimonialsView({
             title="No testimonials yet"
             description="Start collecting testimonials to see them here"
             actionLabel="Add Testimonial"
-            onAction={() => {
-              // Handle add testimonial action
-              console.log('Add testimonial clicked')
-            }}
+            onAction={() => setIsCreateModalOpen(true)}
           />
         ) : (
           // Actual content
@@ -314,6 +320,12 @@ export function TestimonialsView({
           )
         )}
       </div>
+
+      {/* Testimonial Create Modal */}
+      <TestimonialCreateModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
   )
 }
