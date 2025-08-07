@@ -39,9 +39,9 @@ interface Group {
     testimonialCount: number
 }
 
-interface GroupsViewProps {}
+interface GroupsViewProps { }
 
-export function GroupsView({}: GroupsViewProps) {
+export function GroupsView({ }: GroupsViewProps) {
     const [groups, setGroups] = useState<Group[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -50,7 +50,7 @@ export function GroupsView({}: GroupsViewProps) {
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [editingGroup, setEditingGroup] = useState<Group | null>(null)
-    
+
     // Loading states for create and edit operations
     const [isCreating, setIsCreating] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
@@ -243,8 +243,8 @@ export function GroupsView({}: GroupsViewProps) {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-semibold tracking-tight">Testimonial Groups</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
-                            Organize testimonials into categories and groups
+                        <div className="text-muted-foreground text-sm mt-1">
+                            <p>Organize testimonials into categories and groups</p>
                             {loading ? (
                                 <div className="h-4 w-24 bg-muted animate-pulse rounded mt-1" />
                             ) : groups.length > 0 ? (
@@ -252,7 +252,7 @@ export function GroupsView({}: GroupsViewProps) {
                                     {groups.length} group{groups.length !== 1 ? 's' : ''} total
                                 </span>
                             ) : null}
-                        </p>
+                        </div>
                     </div>
                     <Button onClick={openCreateDialog} className="cursor-pointer">
                         <IconPlus className="w-4 h-4 mr-2" />
@@ -331,7 +331,7 @@ export function GroupsView({}: GroupsViewProps) {
                                             </div>
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <ExportDropdown
-                                                    testimonials={allTestimonials.filter(testimonial => 
+                                                    testimonials={allTestimonials.filter(testimonial =>
                                                         testimonial.groupId === group.id && testimonial.status === 'approved'
                                                     )}
                                                     groupName={group.name}
