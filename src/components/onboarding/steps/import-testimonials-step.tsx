@@ -13,10 +13,10 @@ interface ImportTestimonialsStepProps {
   onBack: () => void;
 }
 
-export function ImportTestimonialsStep({ data, updateData, onNext, onBack }: ImportTestimonialsStepProps) {
+export function ImportTestimonialsStep({ updateData, onNext, onBack }: ImportTestimonialsStepProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewData, setPreviewData] = useState<any[]>([]);
+  const [previewData, setPreviewData] = useState<unknown[]>([]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -105,7 +105,7 @@ Bob Johnson,bob@example.com,"Good quality work at a fair price.",4`;
             <div className="bg-gray-50 rounded-lg p-4 space-y-2 max-h-40 overflow-y-auto">
               {previewData.slice(0, 3).map((item, index) => (
                 <div key={index} className="text-sm">
-                  <span className="font-medium">{item.name}</span> - &quot;{item.testimonial.substring(0, 50)}...&quot;
+                  <span className="font-medium">{(item as any).name}</span> - &quot;{(item as any).testimonial.substring(0, 50)}...&quot;
                 </div>
               ))}
               {previewData.length > 3 && (

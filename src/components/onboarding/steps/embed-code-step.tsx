@@ -26,7 +26,7 @@ export function EmbedCodeStep({ data, updateData, onNext, onBack }: EmbedCodeSte
       await navigator.clipboard.writeText(embedCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {}
+    } catch {}
   };
 
   const handleNext = () => {

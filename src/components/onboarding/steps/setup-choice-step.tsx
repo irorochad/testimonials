@@ -14,7 +14,7 @@ interface SetupChoiceStepProps {
   onBack: () => void;
 }
 
-export function SetupChoiceStep({ data, updateData, onNext, onBack }: SetupChoiceStepProps) {
+export function SetupChoiceStep({ onNext, onBack }: SetupChoiceStepProps) {
   const [selectedChoice, setSelectedChoice] = useState<'import' | 'invite' | 'embed' | ''>('');
 
   const choices = [

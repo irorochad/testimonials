@@ -7,7 +7,6 @@ import {
   Users, 
   FileText, 
   Settings,
-  Plus,
   ArrowRight
 } from "lucide-react"
 import { ReusableModal } from "@/components/ui/reusable-modal"

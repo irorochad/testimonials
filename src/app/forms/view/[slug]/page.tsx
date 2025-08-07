@@ -6,9 +6,9 @@ import { PublicFormView } from '@/components/forms/public-form-view'
 import { FormField } from '@/db/types'
 
 interface PublicFormPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export default async function PublicFormPage({ params }: PublicFormPageProps) {

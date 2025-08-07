@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 import {
@@ -11,14 +11,13 @@ import {
     Type,
     Mail,
     MessageSquare,
-    List,
     Star,
     Upload
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -124,14 +123,7 @@ export function FormBuilder({ formId }: FormBuilderProps) {
 
     const router = useRouter()
 
-    // Load existing form data when editing
-    useEffect(() => {
-        if (formId) {
-            fetchFormData()
-        }
-    }, [formId])
-
-    const fetchFormData = async () => {
+    const fetchFormData = useCallback(async () => {
         try {
             setLoading(true)
             const response = await fetch(`/api/forms/${formId}`)
@@ -167,13 +159,20 @@ export function FormBuilder({ formId }: FormBuilderProps) {
                 toast.error("Failed to load form data")
                 router.push('/forms')
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load form data")
             router.push('/forms')
         } finally {
             setLoading(false)
         }
-    }
+    }, [formId, router])
+
+    // Load existing form data when editing
+    useEffect(() => {
+        if (formId) {
+            fetchFormData()
+        }
+    }, [formId, fetchFormData])
 
     // Generate unique field ID
     const generateFieldId = (type: string) => {
@@ -275,18 +274,14 @@ export function FormBuilder({ formId }: FormBuilderProps) {
                 const error = await response.json()
                 toast.error(error.error || "Failed to save form")
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to save form")
         } finally {
             setSaving(false)
         }
     }
 
-    // Preview form
-    const handlePreview = () => {
-        // TODO: Implement preview functionality
-        toast.info("Preview functionality coming soon!")
-    }
+
 
     if (loading) {
         return (

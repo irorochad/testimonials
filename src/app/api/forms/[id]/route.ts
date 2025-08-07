@@ -7,9 +7,11 @@ import { eq, and } from 'drizzle-orm'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+    
     const session = await auth.api.getSession({
       headers: await headers()
     })
@@ -33,7 +35,7 @@ export async function GET(
     const form = await db
       .select()
       .from(forms)
-      .where(and(eq(forms.id, params.id), eq(forms.projectId, userProject[0].id)))
+      .where(and(eq(forms.id, id), eq(forms.projectId, userProject[0].id)))
       .limit(1)
 
     if (!form[0]) {
@@ -50,9 +52,11 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+    
     const session = await auth.api.getSession({
       headers: await headers()
     })
@@ -79,7 +83,7 @@ export async function PATCH(
     const existingForm = await db
       .select()
       .from(forms)
-      .where(and(eq(forms.id, params.id), eq(forms.projectId, userProject[0].id)))
+      .where(and(eq(forms.id, id), eq(forms.projectId, userProject[0].id)))
       .limit(1)
 
     if (!existingForm[0]) {
@@ -98,7 +102,7 @@ export async function PATCH(
         ...(isActive !== undefined && { isActive }),
         updatedAt: new Date(),
       })
-      .where(eq(forms.id, params.id))
+      .where(eq(forms.id, id))
       .returning()
 
     return NextResponse.json(updatedForm[0])
@@ -111,9 +115,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+    
     const session = await auth.api.getSession({
       headers: await headers()
     })
@@ -137,7 +143,7 @@ export async function DELETE(
     const existingForm = await db
       .select()
       .from(forms)
-      .where(and(eq(forms.id, params.id), eq(forms.projectId, userProject[0].id)))
+      .where(and(eq(forms.id, id), eq(forms.projectId, userProject[0].id)))
       .limit(1)
 
     if (!existingForm[0]) {
@@ -147,7 +153,7 @@ export async function DELETE(
     // Delete form (cascade will handle submissions)
     await db
       .delete(forms)
-      .where(eq(forms.id, params.id))
+      .where(eq(forms.id, id))
 
     return NextResponse.json({ success: true })
 

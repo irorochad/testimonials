@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { CardSkeleton, GridSkeleton } from "@/components/ui/loading-skeleton"
 import { ExportDropdown } from "./export-dropdown"
+import { TestimonialWithProjectAndGroup } from "@/lib/testimonials"
 
 interface Group {
     id: string
@@ -39,6 +40,7 @@ interface Group {
     testimonialCount: number
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface GroupsViewProps {
   // No props needed for this component
 }
@@ -47,7 +49,7 @@ export function GroupsView({ }: GroupsViewProps) {
     const [groups, setGroups] = useState<Group[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [allTestimonials, setAllTestimonials] = useState<unknown[]>([])
+    const [allTestimonials, setAllTestimonials] = useState<TestimonialWithProjectAndGroup[]>([])
     // Modal state management for group creation and editing
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -333,7 +335,7 @@ export function GroupsView({ }: GroupsViewProps) {
                                             </div>
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <ExportDropdown
-                                                    testimonials={allTestimonials.filter((testimonial: any) =>
+                                                    testimonials={allTestimonials.filter((testimonial) =>
                                                         testimonial.groupId === group.id && testimonial.status === 'approved'
                                                     )}
                                                     groupName={group.name}

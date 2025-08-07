@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -31,7 +31,7 @@ type FormStep = 'welcome' | 'form' | 'success'
 
 export function PublicFormView({ form }: PublicFormViewProps) {
   const [currentStep, setCurrentStep] = useState<FormStep>('welcome')
-  const [formData, setFormData] = useState<Record<string, any>>({})
+  const [formData, setFormData] = useState<Record<string, unknown>>({})
   const [submitting, setSubmitting] = useState(false)
 
   // Get styling with defaults
@@ -54,7 +54,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
     ...form.settings
   }
 
-  const handleInputChange = (fieldId: string, value: any) => {
+  const handleInputChange = (fieldId: string, value: unknown) => {
     console.log('Form field updated:', fieldId, '=', value)
     setFormData(prev => ({
       ...prev,
@@ -92,7 +92,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
       } else {
         toast.error("Failed to submit form. Please try again.")
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to submit form. Please try again.")
     } finally {
       setSubmitting(false)
@@ -102,26 +102,26 @@ export function PublicFormView({ form }: PublicFormViewProps) {
   const renderWelcomeStep = () => (
     <div className="text-center space-y-6">
       <div className="space-y-4">
-        <h1 
+        <h1
           className="text-3xl font-bold"
-          style={{ 
-            color: styling.theme === 'dark' ? '#ffffff' : styling.textColor 
+          style={{
+            color: styling.theme === 'dark' ? '#ffffff' : styling.textColor
           }}
         >
           {welcomeSettings.title}
         </h1>
-        <p 
+        <p
           className="text-lg leading-relaxed"
-          style={{ 
-            color: styling.theme === 'dark' ? '#d1d5db' : '#6b7280' 
+          style={{
+            color: styling.theme === 'dark' ? '#d1d5db' : '#6b7280'
           }}
         >
           {welcomeSettings.message}
         </p>
         {welcomeSettings.privacyNotice && (
-          <p 
+          <p
             className="text-sm p-4 rounded-lg"
-            style={{ 
+            style={{
               color: styling.theme === 'dark' ? '#9ca3af' : '#6b7280',
               backgroundColor: styling.theme === 'dark' ? '#374151' : '#f9fafb'
             }}
@@ -142,7 +142,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
 
   const renderSuccessStep = () => (
     <div className="text-center space-y-6">
-      <div 
+      <div
         className="w-20 h-20 mx-auto rounded-full flex items-center justify-center"
         style={{
           backgroundColor: styling.theme === 'dark' ? '#065f46' : '#dcfce7'
@@ -151,18 +151,18 @@ export function PublicFormView({ form }: PublicFormViewProps) {
         <Check className="w-10 h-10 text-green-600" />
       </div>
       <div className="space-y-4">
-        <h1 
+        <h1
           className="text-3xl font-bold"
-          style={{ 
-            color: styling.theme === 'dark' ? '#ffffff' : '#111827' 
+          style={{
+            color: styling.theme === 'dark' ? '#ffffff' : '#111827'
           }}
         >
           We&apos;ve received your testimonial!
         </h1>
-        <p 
+        <p
           className="text-lg"
-          style={{ 
-            color: styling.theme === 'dark' ? '#d1d5db' : '#6b7280' 
+          style={{
+            color: styling.theme === 'dark' ? '#d1d5db' : '#6b7280'
           }}
         >
           Thank you for taking the time to share your experience. Your review is important, and we'll constantly try to make your experience better.
@@ -172,8 +172,8 @@ export function PublicFormView({ form }: PublicFormViewProps) {
   )
 
   const renderField = (field: FormField) => {
-    const value = formData[field.id] || ''
-    
+    const value = (formData[field.id] as string) || ''
+
     const fieldStyle = {
       backgroundColor: styling.theme === 'dark' ? '#4b5563' : '#ffffff',
       borderColor: styling.theme === 'dark' ? '#6b7280' : '#d1d5db',
@@ -225,7 +225,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
       case FormFieldTypes.SELECT:
         return (
           <Select value={value} onValueChange={(val) => handleInputChange(field.id, val)}>
-            <SelectTrigger 
+            <SelectTrigger
               style={fieldStyle}
               className="border focus:ring-2 focus:ring-opacity-50"
             >
@@ -249,11 +249,10 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                 key={rating}
                 type="button"
                 onClick={() => handleInputChange(field.id, rating)}
-                className={`w-10 h-10 text-3xl transition-colors ${
-                  value >= rating 
-                    ? 'text-yellow-400' 
-                    : styling.theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
-                } hover:text-yellow-400`}
+                className={`w-10 h-10 text-3xl transition-colors ${Number(value) >= rating
+                  ? 'text-yellow-400'
+                  : styling.theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
+                  } hover:text-yellow-400`}
               >
                 ★
               </button>
@@ -267,8 +266,8 @@ export function PublicFormView({ form }: PublicFormViewProps) {
             onImageUpload={(imageUrl) => handleInputChange(field.id, imageUrl)}
             onImageRemove={() => handleInputChange(field.id, '')}
             currentImage={value}
-            theme={styling.theme}
-            primaryColor={styling.primaryColor}
+            theme={styling.theme as "light" | "dark" | undefined}
+            primaryColor={styling.primaryColor as string}
           />
         )
 
@@ -299,39 +298,39 @@ export function PublicFormView({ form }: PublicFormViewProps) {
         </div>
         <div className="w-12 h-0.5 bg-green-500"></div>
         <div className="flex items-center">
-          <div 
+          <div
             className="w-8 h-8 text-white rounded-full flex items-center justify-center text-sm font-medium"
             style={{ backgroundColor: styling.primaryColor }}
           >
             2
           </div>
-          <span 
+          <span
             className="ml-2 text-sm font-medium"
             style={{ color: styling.primaryColor }}
           >
             Details
           </span>
         </div>
-        <div 
+        <div
           className="w-12 h-0.5"
-          style={{ 
-            backgroundColor: styling.theme === 'dark' ? '#4b5563' : '#e5e7eb' 
+          style={{
+            backgroundColor: styling.theme === 'dark' ? '#4b5563' : '#e5e7eb'
           }}
         ></div>
         <div className="flex items-center">
-          <div 
+          <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-            style={{ 
+            style={{
               backgroundColor: styling.theme === 'dark' ? '#4b5563' : '#e5e7eb',
               color: styling.theme === 'dark' ? '#9ca3af' : '#6b7280'
             }}
           >
             3
           </div>
-          <span 
+          <span
             className="ml-2 text-sm"
-            style={{ 
-              color: styling.theme === 'dark' ? '#9ca3af' : '#6b7280' 
+            style={{
+              color: styling.theme === 'dark' ? '#9ca3af' : '#6b7280'
             }}
           >
             Complete
@@ -342,11 +341,11 @@ export function PublicFormView({ form }: PublicFormViewProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {form.fields.map((field) => (
           <div key={field.id} className="space-y-2">
-            <Label 
-              htmlFor={field.id} 
+            <Label
+              htmlFor={field.id}
               className="text-sm font-medium"
-              style={{ 
-                color: styling.theme === 'dark' ? '#f3f4f6' : '#374151' 
+              style={{
+                color: styling.theme === 'dark' ? '#f3f4f6' : '#374151'
               }}
             >
               {field.label}
@@ -356,10 +355,10 @@ export function PublicFormView({ form }: PublicFormViewProps) {
               {renderField(field)}
             </div>
             {field.description && (
-              <p 
+              <p
                 className="text-sm"
-                style={{ 
-                  color: styling.theme === 'dark' ? '#9ca3af' : '#6b7280' 
+                style={{
+                  color: styling.theme === 'dark' ? '#9ca3af' : '#6b7280'
                 }}
               >
                 {field.description}

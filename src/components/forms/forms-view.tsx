@@ -39,7 +39,7 @@ export function FormsView() {
         setError('Failed to fetch forms')
         toast.error('Failed to fetch forms')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to fetch forms')
       toast.error('Failed to fetch forms')
     } finally {
@@ -84,7 +84,7 @@ export function FormsView() {
       } else {
         toast.error('Failed to delete form')
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete form')
     }
   }
@@ -108,7 +108,7 @@ export function FormsView() {
       } else {
         toast.error('Failed to update form status')
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update form status')
     }
   }
