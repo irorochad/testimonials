@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { X, Copy, Download, Share2, ChevronRight, MessageSquare, Grid3X3, Star, Users, Sparkles } from "lucide-react"
+import { X, Copy, Download, Share2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -98,7 +98,8 @@ export function WidgetBuilder({
 }: WidgetBuilderProps) {
   // Convert testimonials to widget format
   const widgetTestimonials = useMemo(() => {
-    const testimonialsToUse = selectedTestimonials || testimonials
+    // Always prioritize selectedTestimonials if provided
+    const testimonialsToUse = selectedTestimonials && selectedTestimonials.length > 0 ? selectedTestimonials : testimonials
     return testimonialsToUse.map(convertToWidgetTestimonial)
   }, [testimonials, selectedTestimonials])
 
@@ -151,13 +152,23 @@ export function WidgetBuilder({
     }
 
     try {
-      const embedCode = generateEmbedCode(config)
+      // Get the current site URL and project slug
+      const baseUrl = window.location.origin
+      const testimonialsToUse = selectedTestimonials && selectedTestimonials.length > 0 ? selectedTestimonials : testimonials
+      const projectSlug = testimonialsToUse.length > 0 ? testimonialsToUse[0].projectPublicSlug : null
+
+      if (!projectSlug) {
+        toast.error("Project public slug not found. Please enable public sharing in Settings.")
+        return
+      }
+
+      const embedCode = generateEmbedCode(config, baseUrl, projectSlug)
       await navigator.clipboard.writeText(embedCode)
       toast.success("Embed code copied to clipboard!")
     } catch (error) {
       toast.error("Failed to copy embed code")
     }
-  }, [config, validation.isValid])
+  }, [config, validation.isValid, testimonials])
 
   // Download widget as HTML file
   const handleDownloadWidget = useCallback(() => {
@@ -167,7 +178,16 @@ export function WidgetBuilder({
     }
 
     try {
-      const embedCode = generateEmbedCode(config)
+      const baseUrl = window.location.origin
+      const testimonialsToUse = selectedTestimonials && selectedTestimonials.length > 0 ? selectedTestimonials : testimonials
+      const projectSlug = testimonialsToUse.length > 0 ? testimonialsToUse[0].projectPublicSlug : null
+
+      if (!projectSlug) {
+        toast.error("Project public slug not found. Please enable public sharing in Settings.")
+        return
+      }
+
+      const embedCode = generateEmbedCode(config, baseUrl, projectSlug)
       const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,7 +216,7 @@ export function WidgetBuilder({
     } catch (error) {
       toast.error("Failed to download widget")
     }
-  }, [config, validation.isValid])
+  }, [config, validation.isValid, testimonials])
 
   // Share preview (placeholder)
   const handleSharePreview = useCallback(() => {
@@ -280,7 +300,7 @@ export function WidgetBuilder({
               </Tabs>
 
               {/* Export Actions */}
-              <div className="space-y-2 pt-4 border-t">
+              <div className="space-y-3 pt-4 border-t">
                 <Button
                   onClick={handleCopyEmbedCode}
                   disabled={!validation.isValid}
@@ -289,6 +309,7 @@ export function WidgetBuilder({
                   <Copy className="w-4 h-4 mr-2" />
                   Copy Embed Code
                 </Button>
+
                 <Button
                   variant="outline"
                   onClick={handleDownloadWidget}
@@ -298,6 +319,7 @@ export function WidgetBuilder({
                   <Download className="w-4 h-4 mr-2" />
                   Download Widget
                 </Button>
+
                 <Button
                   variant="outline"
                   onClick={handleSharePreview}

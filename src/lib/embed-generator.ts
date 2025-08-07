@@ -1,12 +1,37 @@
 import { WidgetConfig } from "@/types/widget"
 
-export function generateEmbedCode(config: WidgetConfig): string {
+export function generateEmbedCode(config: WidgetConfig, baseUrl?: string, projectSlug?: string): string {
+  return generateShadowDOMEmbedCode(config, baseUrl, projectSlug)
+}
+
+export function generateShadowDOMEmbedCode(config: WidgetConfig, baseUrl?: string, projectSlug?: string): string {
+  const siteUrl = baseUrl || process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://yoursite.com')
+  // Use project slug if provided, otherwise fall back to config.id
+  const widgetId = projectSlug || config.id
+
+  // Convert config to URL parameters for customization
+  const params = new URLSearchParams({
+    type: config.type,
+    theme: config.styling.primaryColor ? 'custom' : 'auto',
+    primaryColor: config.styling.primaryColor,
+    maxTestimonials: '5',
+    autoRotate: config.behavior.autoPlay ? 'true' : 'false',
+    rotationInterval: (config.behavior.slideInterval / 1000).toString(),
+  })
+
+  return `<!-- Boostfen Testimonial Widget -->
+<script src="${siteUrl}/api/widget/${widgetId}?format=js&${params}" async></script>
+<div data-boostfen-widget="${widgetId}" data-widget-type="${config.type}"></div>`
+}
+
+// Legacy function for backward compatibility
+export function generateLegacyEmbedCode(config: WidgetConfig): string {
   const widgetId = `testimonial-widget-${config.id}`
-  
+
   const css = generateWidgetCSS(config, widgetId)
   const html = generateWidgetHTML(config, widgetId)
   const javascript = generateWidgetJS(config, widgetId)
-  
+
   return `<!-- Testimonial Widget - Auto-generated -->
 <div id="${widgetId}"></div>
 <script>
@@ -19,7 +44,7 @@ ${css}
 
 function generateWidgetCSS(config: WidgetConfig, widgetId: string): string {
   const { styling } = config
-  
+
   const shadowMap = {
     'none': 'none',
     'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',

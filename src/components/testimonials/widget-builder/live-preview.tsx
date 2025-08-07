@@ -1,553 +1,188 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Star, Play, Pause, ChevronLeft, ChevronRight, X } from "lucide-react"
 import { WidgetConfig } from "@/types/widget"
+import { useState, useEffect } from "react"
 
 interface LivePreviewProps {
   config: WidgetConfig
 }
 
-// Helper function to get shadow class
-function getShadowClass(shadow: string) {
-  const shadowMap = {
-    'none': '',
-    'sm': 'shadow-sm',
-    'md': 'shadow-md',
-    'lg': 'shadow-lg',
-    'xl': 'shadow-xl'
-  }
-  return shadowMap[shadow as keyof typeof shadowMap] || 'shadow-md'
-}
-
-// Helper function to get font size class
-function getFontSizeClass(fontSize: string) {
-  const fontSizeMap = {
-    'sm': 'text-sm',
-    'base': 'text-base',
-    'lg': 'text-lg'
-  }
-  return fontSizeMap[fontSize as keyof typeof fontSizeMap] || 'text-base'
-}
-
-// Helper function to get font weight class
-function getFontWeightClass(fontWeight: string) {
-  const fontWeightMap = {
-    'normal': 'font-normal',
-    'medium': 'font-medium',
-    'semibold': 'font-semibold',
-    'bold': 'font-bold'
-  }
-  return fontWeightMap[fontWeight as keyof typeof fontWeightMap] || 'font-normal'
-}
-
-// Star rating component
-function StarRating({ rating }: { rating: number | null }) {
-  if (!rating) return null
-
-  return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`w-4 h-4 ${star <= rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-            }`}
-        />
-      ))}
-    </div>
-  )
-}
-
-// Carousel Widget Preview
-function CarouselPreview({ config }: { config: WidgetConfig }) {
+export function LivePreview({ config }: LivePreviewProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(config.behavior.autoPlay)
 
+  // Auto-play functionality
   useEffect(() => {
     if (!isPlaying || config.testimonials.length <= 1) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % config.testimonials.length)
+      setCurrentIndex(prev => (prev + 1) % config.testimonials.length)
     }, config.behavior.slideInterval)
 
     return () => clearInterval(interval)
-  }, [isPlaying, config.testimonials.length, config.behavior.slideInterval])
+  }, [isPlaying, config.behavior.slideInterval, config.testimonials.length])
 
-  const currentTestimonial = config.testimonials[currentIndex]
-  if (!currentTestimonial) return null
-
-  const shadowClass = getShadowClass(config.styling.shadow)
-  const fontSizeClass = getFontSizeClass(config.styling.fontSize)
-  const fontWeightClass = getFontWeightClass(config.styling.fontWeight)
-
-  return (
-    <div className="max-w-md mx-auto">
-      <div
-        className={`rounded-lg ${shadowClass} ${config.styling.border ? 'border-2' : ''}`}
-        style={{
-          backgroundColor: config.styling.backgroundColor,
-          borderRadius: `${config.styling.borderRadius}px`,
-          padding: `${config.styling.padding}px`,
-          borderColor: config.styling.border ? config.styling.borderColor : 'transparent'
-        }}
-      >
-        {/* Header */}
-        <div className="flex items-center mb-4">
-          {currentTestimonial.customerImageUrl ? (
-            <img
-              src={currentTestimonial.customerImageUrl}
-              alt={currentTestimonial.customerName}
-              className="w-12 h-12 rounded-full mr-4 object-cover"
-            />
-          ) : (
-            <div
-              className="w-12 h-12 rounded-full mr-4 flex items-center justify-center text-white font-semibold"
-              style={{ backgroundColor: config.styling.primaryColor }}
-            >
-              {currentTestimonial.customerName.charAt(0).toUpperCase()}
-            </div>
-          )}
-          <div>
-            <h4 className={`${fontWeightClass} ${fontSizeClass}`} style={{ color: config.styling.textColor }}>
-              {currentTestimonial.customerName}
-            </h4>
-            {(currentTestimonial.customerTitle || currentTestimonial.customerCompany) && (
-              <p className="text-sm opacity-75" style={{ color: config.styling.textColor }}>
-                {currentTestimonial.customerTitle}
-                {currentTestimonial.customerTitle && currentTestimonial.customerCompany && ' at '}
-                {currentTestimonial.customerCompany}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Rating */}
-        {currentTestimonial.rating && (
-          <div className="mb-3">
-            <StarRating rating={currentTestimonial.rating} />
-          </div>
-        )}
-
-        {/* Content */}
-        <blockquote className={`mb-4 ${fontSizeClass}`} style={{ color: config.styling.textColor }}>
-        &quot;{currentTestimonial.content}&quot;
-        </blockquote>
-
-        {/* Controls */}
-        {config.testimonials.length > 1 && (
-          <div className="flex justify-between items-center">
-            {config.behavior.showDots && (
-              <div className="flex space-x-2">
-                {config.testimonials.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentIndex(i)}
-                    className={`w-2 h-2 rounded-full transition-colors ${i === currentIndex ? 'opacity-100' : 'opacity-50'
-                      }`}
-                    style={{ backgroundColor: config.styling.primaryColor }}
-                  />
-                ))}
-              </div>
-            )}
-
-            {config.behavior.showNavigation && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentIndex((prev) =>
-                    prev === 0 ? config.testimonials.length - 1 : prev - 1
-                  )}
-                  className="p-1 rounded hover:bg-gray-100"
-                >
-                  <ChevronLeft className="w-4 h-4" style={{ color: config.styling.primaryColor }} />
-                </button>
-                <button
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="p-1 rounded hover:bg-gray-100"
-                >
-                  {isPlaying ? (
-                    <Pause className="w-4 h-4" style={{ color: config.styling.primaryColor }} />
-                  ) : (
-                    <Play className="w-4 h-4" style={{ color: config.styling.primaryColor }} />
-                  )}
-                </button>
-                <button
-                  onClick={() => setCurrentIndex((prev) => (prev + 1) % config.testimonials.length)}
-                  className="p-1 rounded hover:bg-gray-100"
-                >
-                  <ChevronRight className="w-4 h-4" style={{ color: config.styling.primaryColor }} />
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// Popup Widget Preview
-function PopupPreview({ config }: { config: WidgetConfig }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
-
+  // Reset index when testimonials change
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsVisible(false)
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % config.testimonials.length)
-        setIsVisible(true)
-      }, 300)
-    }, config.behavior.displayDuration)
+    setCurrentIndex(0)
+  }, [config.testimonials])
 
-    return () => clearInterval(interval)
-  }, [config.testimonials.length, config.behavior.displayDuration])
-
-  const currentTestimonial = config.testimonials[currentIndex]
-  if (!currentTestimonial) return null
-
-  const positionClasses = {
-    'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4',
-    'top-right': 'top-4 right-4',
-    'top-left': 'top-4 left-4'
+  if (!config.testimonials.length) {
+    return (
+      <div className="flex items-center justify-center h-64 text-muted-foreground">
+        No testimonials to preview
+      </div>
+    )
   }
 
-  return (
-    <div className="relative">
-      {/* Mock website background */}
-      <div className="bg-gray-100 h-64 rounded-lg flex items-center justify-center text-gray-500 text-sm">
-        Your Website Content
-      </div>
+  const testimonial = config.testimonials[currentIndex]
 
-      {/* Popup */}
-      <div className={`absolute ${positionClasses[config.behavior.position]} transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-        }`}>
-        <div
-          className={`max-w-sm ${getShadowClass(config.styling.shadow)} ${config.styling.border ? 'border-2' : ''}`}
-          style={{
-            backgroundColor: config.styling.backgroundColor,
-            borderRadius: `${config.styling.borderRadius}px`,
-            padding: `${config.styling.padding}px`,
-            borderColor: config.styling.border ? config.styling.borderColor : 'transparent',
-            borderLeftWidth: '4px',
-            borderLeftColor: config.styling.primaryColor
-          }}
-        >
-          {config.behavior.showCloseButton && (
-            <button className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded">
-              <X className="w-3 h-3" style={{ color: config.styling.textColor }} />
-            </button>
-          )}
+  const themeColors = getThemeColors('light') // Always use light theme in preview
 
-          <div className="flex items-center mb-2">
-            {currentTestimonial.customerImageUrl ? (
-              <img
-                src={currentTestimonial.customerImageUrl}
-                alt={currentTestimonial.customerName}
-                className="w-8 h-8 rounded-full mr-2 object-cover"
-              />
-            ) : (
-              <div
-                className="w-8 h-8 rounded-full mr-2 flex items-center justify-center text-white text-xs font-semibold"
-                style={{ backgroundColor: config.styling.primaryColor }}
-              >
-                {currentTestimonial.customerName.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div>
-              <h5 className="font-medium text-sm" style={{ color: config.styling.textColor }}>
-                {currentTestimonial.customerName}
-              </h5>
-              {currentTestimonial.rating && (
-                <div className="flex">
-                  <StarRating rating={currentTestimonial.rating} />
-                </div>
-              )}
-            </div>
-          </div>
-
-          <p className="text-xs" style={{ color: config.styling.textColor }}>
-            {currentTestimonial.content.substring(0, 80)}...
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Grid Widget Preview
-function GridPreview({ config }: { config: WidgetConfig }) {
-  const displayTestimonials = config.testimonials
-
-  const gridCols = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-2',
-    3: 'grid-cols-3',
-    4: 'grid-cols-4'
-  }
-
-  const shadowClass = getShadowClass(config.styling.shadow)
-  const fontSizeClass = getFontSizeClass(config.styling.fontSize)
-  const fontWeightClass = getFontWeightClass(config.styling.fontWeight)
+  const containerStyle = {
+    '--primary-color': config.styling.primaryColor,
+    '--background-color': config.styling.backgroundColor,
+    '--text-color': config.styling.textColor,
+    '--accent-color': config.styling.accentColor,
+    '--border-radius': `${config.styling.borderRadius}px`,
+    '--padding': `${config.styling.padding}px`,
+    '--shadow': getShadowValue(config.styling.shadow),
+    '--border-color': config.styling.borderColor,
+    '--gap': `${config.styling.gap}px`,
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontSize: getFontSize(config.styling.fontSize),
+    fontWeight: config.styling.fontWeight,
+    color: 'var(--text-color)',
+  } as React.CSSProperties
 
   return (
-    <div className={`grid ${gridCols[config.behavior.columns as keyof typeof gridCols]} gap-4`}>
-      {displayTestimonials.map((testimonial) => (
-        <div
-          key={testimonial.id}
-          className={`${shadowClass} hover:shadow-lg transition-shadow cursor-pointer ${config.styling.border ? 'border' : ''}`}
-          style={{
-            backgroundColor: config.styling.backgroundColor,
-            borderRadius: `${config.styling.borderRadius}px`,
-            padding: `${config.styling.padding}px`,
-            borderColor: config.styling.border ? config.styling.borderColor : 'transparent'
-          }}
-        >
-          {testimonial.rating && (
-            <div className="mb-2">
-              <StarRating rating={testimonial.rating} />
-            </div>
-          )}
-
-          <blockquote className={`mb-3 ${fontSizeClass}`} style={{ color: config.styling.textColor }}>
-          &quot;{testimonial.content}&quot;
-          </blockquote>
-
-          <div className="flex items-center">
-            {testimonial.customerImageUrl ? (
-              <img
-                src={testimonial.customerImageUrl}
-                alt={testimonial.customerName}
-                className="w-8 h-8 rounded-full mr-2 object-cover"
-              />
-            ) : (
-              <div
-                className="w-8 h-8 rounded-full mr-2 flex items-center justify-center text-white text-xs font-semibold"
-                style={{ backgroundColor: config.styling.primaryColor }}
-              >
-                {testimonial.customerName.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div>
-              <h5 className={`${fontWeightClass} text-xs`} style={{ color: config.styling.textColor }}>
-                {testimonial.customerName}
-              </h5>
-              {testimonial.customerCompany && (
-                <p className="text-xs opacity-75" style={{ color: config.styling.textColor }}>
-                  {testimonial.customerCompany}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// Rating Bar Widget Preview
-function RatingBarPreview({ config }: { config: WidgetConfig }) {
-  const avgRating = config.testimonials.reduce((acc, t) => acc + (t.rating || 0), 0) / config.testimonials.length
-  const displayTestimonials = config.testimonials
-
-  const shadowClass = getShadowClass(config.styling.shadow)
-
-  return (
-    <div className="max-w-sm mx-auto">
-      <div
-        className={`${shadowClass} ${config.styling.border ? 'border' : ''}`}
-        style={{
-          backgroundColor: config.styling.backgroundColor,
-          borderRadius: `${config.styling.borderRadius}px`,
-          padding: `${config.styling.padding}px`,
-          borderColor: config.styling.border ? config.styling.borderColor : 'transparent'
-        }}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <div className="flex mr-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`w-5 h-5 ${star <= Math.round(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                    }`}
-                />
-              ))}
-            </div>
-            <span className="font-bold text-lg" style={{ color: config.styling.textColor }}>
-              {avgRating.toFixed(1)}
-            </span>
-          </div>
-          <span className="text-sm opacity-75" style={{ color: config.styling.textColor }}>
-            from {config.testimonials.length} reviews
-          </span>
-        </div>
-
-        <div className="flex -space-x-2">
-          {displayTestimonials.map((testimonial) => (
-            <div key={testimonial.id} className="relative">
-              {testimonial.customerImageUrl ? (
-                <img
-                  src={testimonial.customerImageUrl}
-                  alt={testimonial.customerName}
-                  className="w-8 h-8 rounded-full border-2 border-white object-cover"
-                />
-              ) : (
-                <div
-                  className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-semibold"
-                  style={{ backgroundColor: config.styling.primaryColor }}
-                >
-                  {testimonial.customerName.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
-          ))}
-
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Avatar Carousel Widget Preview
-function AvatarCarouselPreview({ config }: { config: WidgetConfig }) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const displayTestimonials = config.testimonials
-
-  return (
-    <div className="max-w-md mx-auto">
-      <div className="flex justify-center space-x-4 mb-4">
-        {displayTestimonials.map((testimonial, index) => (
-          <div
-            key={testimonial.id}
-            className="relative cursor-pointer transform transition-transform hover:scale-110"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-          >
-            {testimonial.customerImageUrl ? (
-              <img
-                src={testimonial.customerImageUrl}
-                alt={testimonial.customerName}
-                className="w-16 h-16 rounded-full object-cover border-4"
-                style={{ borderColor: config.styling.primaryColor }}
-              />
-            ) : (
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold border-4"
-                style={{
-                  backgroundColor: config.styling.primaryColor,
-                  borderColor: config.styling.primaryColor
-                }}
-              >
-                {testimonial.customerName.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {hoveredIndex !== null && (
-        <div
-          className={`text-center ${getShadowClass(config.styling.shadow)} ${config.styling.border ? 'border' : ''}`}
-          style={{
-            backgroundColor: config.styling.backgroundColor,
-            borderRadius: `${config.styling.borderRadius}px`,
-            padding: `${config.styling.padding}px`,
-            borderColor: config.styling.border ? config.styling.borderColor : 'transparent'
-          }}
-        >
-          <blockquote className="text-sm mb-2" style={{ color: config.styling.textColor }}>
-          &quot;{displayTestimonials[hoveredIndex].content}&quot;
-          </blockquote>
-          <cite className="text-xs font-medium" style={{ color: config.styling.primaryColor }}>
-            — {displayTestimonials[hoveredIndex].customerName}
-          </cite>
-        </div>
+    <div style={containerStyle}>
+      {config.type === 'carousel' && (
+        <CarouselPreview 
+          testimonial={testimonial}
+          config={config}
+          currentIndex={currentIndex}
+          onIndexChange={setCurrentIndex}
+        />
+      )}
+      
+      {config.type === 'grid' && (
+        <GridPreview 
+          testimonials={config.testimonials.slice(0, config.behavior.columns * 2)}
+          config={config}
+        />
+      )}
+      
+      {config.type === 'popup' && (
+        <PopupPreview 
+          testimonial={testimonial}
+          config={config}
+        />
+      )}
+      
+      {config.type === 'rating-bar' && (
+        <RatingBarPreview 
+          testimonials={config.testimonials}
+          config={config}
+        />
+      )}
+      
+      {config.type === 'avatar-carousel' && (
+        <AvatarCarouselPreview 
+          testimonials={config.testimonials}
+          config={config}
+          currentIndex={currentIndex}
+          onIndexChange={setCurrentIndex}
+        />
+      )}
+      
+      {config.type === 'quote-spotlight' && (
+        <QuoteSpotlightPreview 
+          testimonial={testimonial}
+          config={config}
+          currentIndex={currentIndex}
+          onIndexChange={setCurrentIndex}
+        />
       )}
     </div>
   )
 }
 
-// Quote Spotlight Widget Preview
-function QuoteSpotlightPreview({ config }: { config: WidgetConfig }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-
-  useEffect(() => {
-    if (!config.behavior.autoPlay || config.testimonials.length <= 1) return
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % config.testimonials.length)
-    }, config.behavior.slideInterval)
-
-    return () => clearInterval(interval)
-  }, [config.behavior.autoPlay, config.testimonials.length, config.behavior.slideInterval])
-
-  const currentTestimonial = config.testimonials[currentIndex]
-  if (!currentTestimonial) return null
-
-  const shadowClass = getShadowClass(config.styling.shadow)
-  const fontSizeClass = getFontSizeClass(config.styling.fontSize)
-  const fontWeightClass = getFontWeightClass(config.styling.fontWeight)
-
+function CarouselPreview({ 
+  testimonial, 
+  config, 
+  currentIndex, 
+  onIndexChange 
+}: {
+  testimonial: any
+  config: WidgetConfig
+  currentIndex: number
+  onIndexChange: (index: number) => void
+}) {
   return (
-    <div className="max-w-lg mx-auto text-center">
-      <div
-        className={`${shadowClass} ${config.styling.border ? 'border' : ''}`}
+    <div className="max-w-md mx-auto">
+      <div 
+        className="widget-container"
         style={{
-          backgroundColor: config.styling.backgroundColor,
-          borderRadius: `${config.styling.borderRadius}px`,
-          padding: `${config.styling.padding * 1.5}px`,
-          borderColor: config.styling.border ? config.styling.borderColor : 'transparent'
+          backgroundColor: 'var(--background-color)',
+          borderRadius: 'var(--border-radius)',
+          padding: 'var(--padding)',
+          boxShadow: 'var(--shadow)',
+          border: config.styling.border ? `1px solid var(--border-color)` : 'none',
         }}
       >
-        {currentTestimonial.rating && (
-          <div className="flex justify-center mb-4">
-            <StarRating rating={currentTestimonial.rating} />
-          </div>
-        )}
-
-        <blockquote className={`text-xl ${fontWeightClass} mb-6 leading-relaxed`} style={{ color: config.styling.textColor }}>
-        &quot;{currentTestimonial.content}&quot;
-        </blockquote>
-
-        <div className="flex items-center justify-center">
-          {currentTestimonial.customerImageUrl ? (
-            <img
-              src={currentTestimonial.customerImageUrl}
-              alt={currentTestimonial.customerName}
-              className="w-12 h-12 rounded-full mr-4 object-cover"
+        <div className="flex items-center mb-4">
+          {testimonial.customerImageUrl ? (
+            <img 
+              src={testimonial.customerImageUrl} 
+              alt={testimonial.customerName}
+              className="w-12 h-12 rounded-full object-cover mr-4"
+              style={{ border: `2px solid var(--primary-color)` }}
             />
           ) : (
-            <div
-              className="w-12 h-12 rounded-full mr-4 flex items-center justify-center text-white font-semibold"
-              style={{ backgroundColor: config.styling.primaryColor }}
+            <div 
+              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold mr-4"
+              style={{ backgroundColor: 'var(--primary-color)' }}
             >
-              {currentTestimonial.customerName.charAt(0).toUpperCase()}
+              {testimonial.customerName.charAt(0).toUpperCase()}
             </div>
           )}
-          <div className="text-left">
-            <cite className={`${fontWeightClass} ${fontSizeClass}`} style={{ color: config.styling.textColor }}>
-              {currentTestimonial.customerName}
-            </cite>
-            {(currentTestimonial.customerTitle || currentTestimonial.customerCompany) && (
-              <p className="text-sm opacity-75" style={{ color: config.styling.textColor }}>
-                {currentTestimonial.customerTitle}
-                {currentTestimonial.customerTitle && currentTestimonial.customerCompany && ' at '}
-                {currentTestimonial.customerCompany}
+          <div>
+            <h4 className="font-semibold" style={{ color: 'var(--primary-color)' }}>
+              {testimonial.customerName}
+            </h4>
+            {(testimonial.customerTitle || testimonial.customerCompany) && (
+              <p className="text-sm opacity-80">
+                {testimonial.customerTitle}
+                {testimonial.customerTitle && testimonial.customerCompany ? ', ' : ''}
+                {testimonial.customerCompany}
               </p>
             )}
           </div>
         </div>
-
-        {config.testimonials.length > 1 && (
-          <div className="flex justify-center space-x-2 mt-4">
-            {config.testimonials.map((_, i) => (
+        
+        {testimonial.rating && (
+          <div className="mb-3 text-lg">
+            {generateStars(testimonial.rating)}
+          </div>
+        )}
+        
+        <blockquote className="italic mb-4 leading-relaxed">
+          "{testimonial.content}"
+        </blockquote>
+        
+        {config.testimonials.length > 1 && config.behavior.showDots && (
+          <div className="flex justify-center gap-2">
+            {config.testimonials.map((_, index) => (
               <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`w-2 h-2 rounded-full transition-colors ${i === currentIndex ? 'opacity-100' : 'opacity-50'
-                  }`}
-                style={{ backgroundColor: config.styling.primaryColor }}
+                key={index}
+                className="w-2 h-2 rounded-full transition-colors"
+                style={{
+                  backgroundColor: index === currentIndex 
+                    ? 'var(--primary-color)' 
+                    : '#d1d5db'
+                }}
+                onClick={() => onIndexChange(index)}
               />
             ))}
           </div>
@@ -557,32 +192,389 @@ function QuoteSpotlightPreview({ config }: { config: WidgetConfig }) {
   )
 }
 
-export function LivePreview({ config }: LivePreviewProps) {
-  if (config.testimonials.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
-        <div className="text-center">
-          <p className="text-lg font-medium mb-2">No testimonials selected</p>
-          <p className="text-sm">Please select testimonials to preview the widget</p>
+function GridPreview({ testimonials, config }: { testimonials: any[], config: WidgetConfig }) {
+  return (
+    <div 
+      className="grid gap-4"
+      style={{
+        gridTemplateColumns: `repeat(${Math.min(config.behavior.columns, testimonials.length)}, 1fr)`,
+        gap: 'var(--gap)',
+      }}
+    >
+      {testimonials.map((testimonial, index) => (
+        <div
+          key={index}
+          className="widget-container"
+          style={{
+            backgroundColor: 'var(--background-color)',
+            borderRadius: 'var(--border-radius)',
+            padding: 'var(--padding)',
+            boxShadow: 'var(--shadow)',
+            border: config.styling.border ? `1px solid var(--border-color)` : 'none',
+          }}
+        >
+          {testimonial.rating && (
+            <div className="mb-2 text-sm">
+              {generateStars(testimonial.rating)}
+            </div>
+          )}
+          
+          <p className="text-sm italic mb-3 line-clamp-3">
+            "{testimonial.content}"
+          </p>
+          
+          <div className="flex items-center">
+            {testimonial.customerImageUrl ? (
+              <img 
+                src={testimonial.customerImageUrl} 
+                alt={testimonial.customerName}
+                className="w-8 h-8 rounded-full object-cover mr-2"
+              />
+            ) : (
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-2"
+                style={{ backgroundColor: 'var(--primary-color)' }}
+              >
+                {testimonial.customerName.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <p className="text-xs font-semibold">{testimonial.customerName}</p>
+              {testimonial.customerCompany && (
+                <p className="text-xs opacity-70">{testimonial.customerCompany}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function PopupPreview({ testimonial, config }: { testimonial: any, config: WidgetConfig }) {
+  return (
+    <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+        Website Content Preview
+      </div>
+      
+      <div 
+        className="absolute max-w-xs"
+        style={{
+          [config.behavior.position.includes('bottom') ? 'bottom' : 'top']: '16px',
+          [config.behavior.position.includes('right') ? 'right' : 'left']: '16px',
+        }}
+      >
+        <div
+          className="widget-container"
+          style={{
+            backgroundColor: 'var(--background-color)',
+            borderRadius: 'var(--border-radius)',
+            padding: 'var(--padding)',
+            boxShadow: 'var(--shadow)',
+            borderLeft: `4px solid var(--primary-color)`,
+          }}
+        >
+          {config.behavior.showCloseButton && (
+            <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+              ×
+            </button>
+          )}
+          
+          <div className="flex items-center mb-2">
+            {testimonial.customerImageUrl ? (
+              <img 
+                src={testimonial.customerImageUrl} 
+                alt={testimonial.customerName}
+                className="w-8 h-8 rounded-full object-cover mr-2"
+              />
+            ) : (
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-2"
+                style={{ backgroundColor: 'var(--primary-color)' }}
+              >
+                {testimonial.customerName.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <p className="text-sm font-semibold">{testimonial.customerName}</p>
+              {testimonial.rating && (
+                <div className="text-xs">
+                  {generateStars(testimonial.rating, 12)}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <p className="text-xs">
+            "{testimonial.content.substring(0, 80)}..."
+          </p>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
-  switch (config.type) {
-    case 'carousel':
-      return <CarouselPreview config={config} />
-    case 'popup':
-      return <PopupPreview config={config} />
-    case 'grid':
-      return <GridPreview config={config} />
-    case 'rating-bar':
-      return <RatingBarPreview config={config} />
-    case 'avatar-carousel':
-      return <AvatarCarouselPreview config={config} />
-    case 'quote-spotlight':
-      return <QuoteSpotlightPreview config={config} />
-    default:
-      return <CarouselPreview config={config} />
+function RatingBarPreview({ testimonials, config }: { testimonials: any[], config: WidgetConfig }) {
+  const avgRating = testimonials.reduce((acc, t) => acc + (t.rating || 0), 0) / testimonials.length
+  const maxAvatars = Math.min(5, testimonials.length)
+  
+  return (
+    <div className="max-w-sm mx-auto">
+      <div
+        className="widget-container"
+        style={{
+          backgroundColor: 'var(--background-color)',
+          borderRadius: 'var(--border-radius)',
+          padding: 'var(--padding)',
+          boxShadow: 'var(--shadow)',
+          border: config.styling.border ? `1px solid var(--border-color)` : 'none',
+        }}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center">
+            <div className="text-lg mr-2">
+              {generateStars(Math.round(avgRating), 20)}
+            </div>
+            <span className="font-bold text-lg">{avgRating.toFixed(1)}</span>
+          </div>
+          <span className="text-sm opacity-80">
+            from {testimonials.length} reviews
+          </span>
+        </div>
+        
+        <div className="flex -space-x-1">
+          {testimonials.slice(0, maxAvatars).map((testimonial, index) => (
+            testimonial.customerImageUrl ? (
+              <img
+                key={index}
+                src={testimonial.customerImageUrl}
+                alt={testimonial.customerName}
+                className="w-8 h-8 rounded-full border-2 border-white object-cover"
+              />
+            ) : (
+              <div
+                key={index}
+                className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-semibold"
+                style={{ backgroundColor: 'var(--primary-color)' }}
+              >
+                {testimonial.customerName.charAt(0).toUpperCase()}
+              </div>
+            )
+          ))}
+          {testimonials.length > maxAvatars && (
+            <div className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-semibold">
+              +{testimonials.length - maxAvatars}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AvatarCarouselPreview({ 
+  testimonials, 
+  config, 
+  currentIndex, 
+  onIndexChange 
+}: {
+  testimonials: any[]
+  config: WidgetConfig
+  currentIndex: number
+  onIndexChange: (index: number) => void
+}) {
+  const maxAvatars = Math.min(5, testimonials.length)
+  const displayTestimonials = testimonials.slice(0, maxAvatars)
+  
+  return (
+    <div className="text-center">
+      <div className="flex justify-center gap-4 mb-4">
+        {displayTestimonials.map((testimonial, index) => (
+          <button
+            key={index}
+            className="transition-transform hover:scale-110"
+            onClick={() => onIndexChange(index)}
+          >
+            {testimonial.customerImageUrl ? (
+              <img
+                src={testimonial.customerImageUrl}
+                alt={testimonial.customerName}
+                className="w-16 h-16 rounded-full object-cover"
+                style={{ 
+                  border: index === currentIndex 
+                    ? `4px solid var(--primary-color)` 
+                    : '4px solid #e5e7eb' 
+                }}
+              />
+            ) : (
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold"
+                style={{ 
+                  backgroundColor: 'var(--primary-color)',
+                  border: index === currentIndex 
+                    ? `4px solid var(--primary-color)` 
+                    : '4px solid #e5e7eb' 
+                }}
+              >
+                {testimonial.customerName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </button>
+        ))}
+      </div>
+      
+      <div
+        className="widget-container min-h-[120px] flex flex-col justify-center"
+        style={{
+          backgroundColor: 'var(--background-color)',
+          borderRadius: 'var(--border-radius)',
+          padding: 'var(--padding)',
+          boxShadow: 'var(--shadow)',
+          border: config.styling.border ? `1px solid var(--border-color)` : 'none',
+        }}
+      >
+        {currentIndex < displayTestimonials.length ? (
+          <>
+            <p className="italic mb-3">
+              "{displayTestimonials[currentIndex].content}"
+            </p>
+            <cite className="font-semibold">
+              — {displayTestimonials[currentIndex].customerName}
+            </cite>
+          </>
+        ) : (
+          <p className="text-gray-500">
+            Click on an avatar to see their testimonial
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function QuoteSpotlightPreview({ 
+  testimonial, 
+  config, 
+  currentIndex, 
+  onIndexChange 
+}: {
+  testimonial: any
+  config: WidgetConfig
+  currentIndex: number
+  onIndexChange: (index: number) => void
+}) {
+  return (
+    <div className="max-w-lg mx-auto text-center">
+      <div
+        className="widget-container"
+        style={{
+          backgroundColor: 'var(--background-color)',
+          borderRadius: 'var(--border-radius)',
+          padding: 'var(--padding)',
+          boxShadow: 'var(--shadow)',
+          border: config.styling.border ? `1px solid var(--border-color)` : 'none',
+        }}
+      >
+        {testimonial.rating && (
+          <div className="mb-4 text-xl">
+            {generateStars(testimonial.rating)}
+          </div>
+        )}
+        
+        <blockquote className="text-xl font-semibold italic mb-6 leading-relaxed">
+          "{testimonial.content}"
+        </blockquote>
+        
+        <div className="flex items-center justify-center mb-4">
+          {testimonial.customerImageUrl ? (
+            <img 
+              src={testimonial.customerImageUrl} 
+              alt={testimonial.customerName}
+              className="w-12 h-12 rounded-full object-cover mr-4"
+              style={{ border: `2px solid var(--primary-color)` }}
+            />
+          ) : (
+            <div 
+              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold mr-4"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+            >
+              {testimonial.customerName.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="text-left">
+            <cite className="font-semibold block">{testimonial.customerName}</cite>
+            {(testimonial.customerTitle || testimonial.customerCompany) && (
+              <p className="text-sm opacity-80">
+                {testimonial.customerTitle}
+                {testimonial.customerTitle && testimonial.customerCompany ? ', ' : ''}
+                {testimonial.customerCompany}
+              </p>
+            )}
+          </div>
+        </div>
+        
+        {config.testimonials.length > 1 && config.behavior.showDots && (
+          <div className="flex justify-center gap-2">
+            {config.testimonials.map((_, index) => (
+              <button
+                key={index}
+                className="w-2 h-2 rounded-full transition-colors"
+                style={{
+                  backgroundColor: index === currentIndex 
+                    ? 'var(--primary-color)' 
+                    : '#d1d5db'
+                }}
+                onClick={() => onIndexChange(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function generateStars(rating: number, size: number = 16) {
+  return Array.from({ length: 5 }, (_, i) => (
+    <span
+      key={i}
+      style={{ 
+        color: i < rating ? 'var(--primary-color)' : '#e5e7eb',
+        fontSize: `${size}px`
+      }}
+    >
+      ★
+    </span>
+  ))
+}
+
+function getThemeColors(theme: string) {
+  const isDark = theme === 'dark' || (theme === 'auto' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+  
+  return {
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
+    textColor: isDark ? '#f9fafb' : '#374151',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
   }
+}
+
+function getFontSize(size: 'sm' | 'base' | 'lg') {
+  const sizeMap = {
+    'sm': '14px',
+    'base': '16px',
+    'lg': '18px'
+  }
+  return sizeMap[size]
+}
+
+function getShadowValue(shadow: 'none' | 'sm' | 'md' | 'lg' | 'xl') {
+  const shadowMap = {
+    'none': 'none',
+    'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)'
+  }
+  return shadowMap[shadow]
 }
