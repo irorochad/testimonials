@@ -12,7 +12,7 @@ export default function Home() {
       {/* Top Notification Bar */}
       <div className="bg-gray-900 dark:bg-gray-950 text-white text-center py-2 px-4">
         <p className="text-sm">
-          <span className="font-medium">Beta</span> - Trade effort for impact with ProofFlow's AI analyst
+          <span className="font-medium">Beta</span> - Trade effort for impact with ProofFlow&apos;s AI analyst
         </p>
       </div>
 

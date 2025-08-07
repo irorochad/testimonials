@@ -375,7 +375,7 @@ export function TestimonialCard({ testimonial, groups, onStatusUpdate, onGroupUp
                
                     <div className="mb-4">
                         <blockquote className="text-sm leading-relaxed text-muted-foreground italic">
-                            "{truncateContent(testimonial.content)}"
+                        &quot;{truncateContent(testimonial.content)}&quot;
                         </blockquote>
                     </div>
                

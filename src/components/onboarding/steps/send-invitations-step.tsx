@@ -76,7 +76,7 @@ export function SendInvitationsStep({ data, updateData, onNext, onBack }: SendIn
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Invite your best customers</CardTitle>
         <CardDescription>
-          Send personalized invitations to customers you'd like testimonials from
+          Send personalized invitations to customers you&apos;d like testimonials from
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -123,7 +123,7 @@ export function SendInvitationsStep({ data, updateData, onNext, onBack }: SendIn
           <h3 className="font-medium text-blue-900 mb-2">Email Preview:</h3>
           <div className="text-sm text-blue-800 space-y-2">
             <p><strong>Subject:</strong> Would you share your experience with {data.projectName}?</p>
-            <p><strong>Message:</strong> Hi [Name], we'd love to hear about your experience with our service. Your feedback helps us improve and helps other customers make informed decisions...</p>
+            <p><strong>Message:</strong> Hi [Name], we&apos;d love to hear about your experience with our service. Your feedback helps us improve and helps other customers make informed decisions...</p>
           </div>
         </div>
 

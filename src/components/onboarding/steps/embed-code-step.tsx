@@ -65,7 +65,7 @@ export function EmbedCodeStep({ data, updateData, onNext, onBack }: EmbedCodeSte
           <h3 className="font-medium text-blue-900 mb-2">How to add this to your site:</h3>
           <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
             <li>Copy the code above</li>
-            <li>Paste it into your website's HTML where you want testimonials to appear</li>
+            <li>Paste it into your website&apos;s HTML where you want testimonials to appear</li>
             <li>The widget will automatically start displaying testimonials</li>
           </ol>
         </div>
@@ -91,7 +91,7 @@ export function EmbedCodeStep({ data, updateData, onNext, onBack }: EmbedCodeSte
             className="rounded"
           />
           <label htmlFor="embed-confirmed" className="text-sm">
-            I've added the code to my website
+            I&apos;ve added the code to my website
           </label>
         </div>
 

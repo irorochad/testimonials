@@ -39,13 +39,15 @@ interface Group {
     testimonialCount: number
 }
 
-interface GroupsViewProps { }
+interface GroupsViewProps {
+  // No props needed for this component
+}
 
 export function GroupsView({ }: GroupsViewProps) {
     const [groups, setGroups] = useState<Group[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [allTestimonials, setAllTestimonials] = useState<any[]>([])
+    const [allTestimonials, setAllTestimonials] = useState<unknown[]>([])
     // Modal state management for group creation and editing
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -331,7 +333,7 @@ export function GroupsView({ }: GroupsViewProps) {
                                             </div>
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <ExportDropdown
-                                                    testimonials={allTestimonials.filter(testimonial =>
+                                                    testimonials={allTestimonials.filter((testimonial: any) =>
                                                         testimonial.groupId === group.id && testimonial.status === 'approved'
                                                     )}
                                                     groupName={group.name}

@@ -105,7 +105,7 @@ Bob Johnson,bob@example.com,"Good quality work at a fair price.",4`;
             <div className="bg-gray-50 rounded-lg p-4 space-y-2 max-h-40 overflow-y-auto">
               {previewData.slice(0, 3).map((item, index) => (
                 <div key={index} className="text-sm">
-                  <span className="font-medium">{item.name}</span> - "{item.testimonial.substring(0, 50)}..."
+                  <span className="font-medium">{item.name}</span> - &quot;{item.testimonial.substring(0, 50)}...&quot;
                 </div>
               ))}
               {previewData.length > 3 && (

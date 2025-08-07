@@ -110,7 +110,7 @@ export function SuccessStep({ data, onComplete, onSkip }: SuccessStepProps) {
             variant="link"
             className="w-full text-gray-500"
           >
-            I'll explore on my own
+            I&apos;ll explore on my own
           </Button>
         </div>
       </CardContent>

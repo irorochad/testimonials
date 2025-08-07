@@ -29,8 +29,8 @@ export function EmptyState({
                         <rect x="60" y="40" width="80" height="100" rx="8" fill="currentColor" opacity="0.7" />
 
                         {/* Quote marks */}
-                        <text x="85" y="85" fontSize="24" fill="currentColor" opacity="0.6">"</text>
-                        <text x="115" y="115" fontSize="24" fill="currentColor" opacity="0.6">"</text>
+                        <text x="85" y="85" fontSize="24" fill="currentColor" opacity="0.6">&quot;</text>
+                        <text x="115" y="115" fontSize="24" fill="currentColor" opacity="0.6">&quot;</text>
 
                         {/* Stars */}
                         <circle cx="170" cy="30" r="3" fill="currentColor" opacity="0.4" />

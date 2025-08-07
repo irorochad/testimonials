@@ -155,7 +155,7 @@ export function PublicTestimonialView({ testimonial }: PublicTestimonialViewProp
             {/* Testimonial Content */}
             <div className="mb-8">
               <blockquote className={`text-xl leading-relaxed ${themeClasses.textPrimary} italic`}>
-                "{testimonial.content}"
+              &quot;{testimonial.content}&quot;
               </blockquote>
             </div>
 

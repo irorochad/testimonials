@@ -14,7 +14,7 @@ interface PublicFormPageProps {
 export default async function PublicFormPage({ params }: PublicFormPageProps) {
   // Await params to fix Next.js 15 async params requirement
   const { slug } = await params
-  
+
   // Get the form by slug
   const form = await db
     .select({
@@ -44,7 +44,7 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
   return <PublicFormView form={{
     ...form[0],
     fields: form[0].fields as FormField[],
-    styling: form[0].styling as any,
-    settings: form[0].settings as any,
+    styling: form[0].styling as Record<string, unknown>,
+    settings: form[0].settings as Record<string, unknown>,
   }} />
 }

@@ -59,7 +59,7 @@ export async function PATCH(
         }
 
         // Update the testimonial status
-        const updateData: any = { status };
+        const updateData: { status: string; approvedAt?: Date | null } = { status };
 
         // Set approvedAt timestamp if approving
         if (status === 'approved') {

@@ -124,7 +124,7 @@ export function WelcomeStep({ data, updateData, onNext }: WelcomeStepProps) {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Let's set up your first project</CardTitle>
         <CardDescription className="mt-2">
-          We'll help you get started with collecting testimonials in just a few steps
+          We&apos;ll help you get started with collecting testimonials in just a few steps
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -172,7 +172,7 @@ export function WelcomeStep({ data, updateData, onNext }: WelcomeStepProps) {
             </p>
           )}
           <p className="text-sm text-gray-500">
-            We'll use this for widget setup and domain verification
+            We&apos;ll use this for widget setup and domain verification
           </p>
         </div>
 

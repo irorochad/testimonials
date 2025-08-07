@@ -19,8 +19,8 @@ interface PublicFormViewProps {
     description: string | null
     slug: string
     fields: FormField[]
-    styling: any
-    settings: any
+    styling: Record<string, unknown>
+    settings: Record<string, unknown>
     isActive: boolean
     projectName: string
     projectId: string
@@ -157,7 +157,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
             color: styling.theme === 'dark' ? '#ffffff' : '#111827' 
           }}
         >
-          We've received your testimonial!
+          We&apos;ve received your testimonial!
         </h1>
         <p 
           className="text-lg"
@@ -165,7 +165,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
             color: styling.theme === 'dark' ? '#d1d5db' : '#6b7280' 
           }}
         >
-          Thank you for taking the time to share your experience. We'll review it and get back to you soon.
+          Thank you for taking the time to share your experience. Your review is important, and we'll constantly try to make your experience better.
         </p>
       </div>
     </div>

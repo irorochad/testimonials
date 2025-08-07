@@ -130,7 +130,7 @@ function CarouselPreview({ config }: { config: WidgetConfig }) {
 
         {/* Content */}
         <blockquote className={`mb-4 ${fontSizeClass}`} style={{ color: config.styling.textColor }}>
-          "{currentTestimonial.content}"
+        &quot;{currentTestimonial.content}&quot;
         </blockquote>
 
         {/* Controls */}
@@ -310,7 +310,7 @@ function GridPreview({ config }: { config: WidgetConfig }) {
           )}
 
           <blockquote className={`mb-3 ${fontSizeClass}`} style={{ color: config.styling.textColor }}>
-            "{testimonial.content}"
+          &quot;{testimonial.content}&quot;
           </blockquote>
 
           <div className="flex items-center">
@@ -457,7 +457,7 @@ function AvatarCarouselPreview({ config }: { config: WidgetConfig }) {
           }}
         >
           <blockquote className="text-sm mb-2" style={{ color: config.styling.textColor }}>
-            "{displayTestimonials[hoveredIndex].content}"
+          &quot;{displayTestimonials[hoveredIndex].content}&quot;
           </blockquote>
           <cite className="text-xs font-medium" style={{ color: config.styling.primaryColor }}>
             — {displayTestimonials[hoveredIndex].customerName}
@@ -507,7 +507,7 @@ function QuoteSpotlightPreview({ config }: { config: WidgetConfig }) {
         )}
 
         <blockquote className={`text-xl ${fontWeightClass} mb-6 leading-relaxed`} style={{ color: config.styling.textColor }}>
-          "{currentTestimonial.content}"
+        &quot;{currentTestimonial.content}&quot;
         </blockquote>
 
         <div className="flex items-center justify-center">

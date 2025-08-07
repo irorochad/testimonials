@@ -163,7 +163,7 @@ export function PublicGroupView({ group, testimonials }: PublicGroupViewProps) {
 
                     {/* Testimonial Content */}
                     <blockquote className="text-gray-700 text-sm leading-relaxed mb-4 italic">
-                      "{truncateContent(testimonial.content)}"
+                    &quot;{truncateContent(testimonial.content)}&quot;
                     </blockquote>
 
                     {/* Date */}
@@ -190,7 +190,7 @@ export function PublicGroupView({ group, testimonials }: PublicGroupViewProps) {
               No testimonials yet
             </h3>
             <p className="text-gray-500">
-              This group doesn't have any public testimonials yet.
+              This group doesn&apos;t have any public testimonials yet.
             </p>
           </div>
         )}

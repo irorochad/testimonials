@@ -238,7 +238,7 @@ export function TestimonialDetail({ testimonial: initialTestimonial }: Testimoni
           {/* Testimonial Content */}
           <div className="mb-6">
             <blockquote className="text-lg leading-relaxed italic text-center py-4">
-              "{testimonial.content}"
+            &quot;{testimonial.content}&quot;
             </blockquote>
           </div>
 
