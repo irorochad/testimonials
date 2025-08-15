@@ -3,12 +3,10 @@ import { db } from '@/db'
 import { projects, testimonials, groups } from '@/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { widgetId: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { widgetId } = params
+    // Extract widgetId from the URL
+    const widgetId = request.nextUrl.pathname.split('/').pop() as string;
     const { searchParams } = new URL(request.url)
     
     // Get widget configuration from URL parameters
