@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonial Widget Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        .widget-container {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .debug-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Testimonial Widget Test Page</h1>
+
+    <div class="test-section">
+        <h2>Test 1: Widget Builder Export (With Config)</h2>
+        <div class="debug-info">
+            <strong>This simulates a widget exported from your widget builder</strong><br>
+            Widget ID: test-widget<br>
+            Base URL: http://localhost:3000<br>
+            Widget Type: carousel<br>
+            <strong>Uses embedded config data (no API call needed)</strong>
+        </div>
+        <div class="widget-container">
+            <p><strong>Widget builder export should appear below:</strong></p>
+            <!-- Boostfen Testimonial Widget -->
+<script 
+src="http://localhost:3000/widget/embed-v2.js" 
+data-widget-id="harmono" 
+data-widget-type="carousel"
+data-base-url="http://localhost:3000"
+data-config='{"type":"carousel","styling":{"primaryColor":"#F59E0B","backgroundColor":"#FFFFFF","textColor":"#1F2937","accentColor":"#F59E0B","fontSize":"base","fontWeight":"normal","borderRadius":8,"padding":16,"shadow":"md","border":false,"borderColor":"#E5E7EB","gap":16,"margin":0},"behavior":{"autoPlay":true,"slideInterval":4000,"displayDuration":5000,"animationType":"slide","showNavigation":true,"showDots":true,"position":"bottom-right","columns":3,"pauseOnHover":true,"clickToExpand":false,"showCloseButton":true},"id":"widget-1754694386962","testimonials":[{"id":"0d059253-c54b-4eeb-b1ad-c04739918aea","customerName":"Jennifer Lee","customerCompany":"Family Restaurant","customerTitle":"Manager","customerImageUrl":"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face","content":"Our online reputation improved dramatically. The review widgets on our website help convince people to visit our restaurant.","rating":4,"createdAt":"2025-07-19T13:35:27.870Z"},{"id":"e9578956-6c8b-4264-9889-a0490c7ec1c4","customerName":"Lisa Thompson","customerCompany":"RetailPro","customerTitle":"E-commerce Manager","customerImageUrl":"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face","content":"The analytics dashboard gives us great insights into which testimonials perform best. Really helps with our A/B testing.","rating":4,"createdAt":"2025-07-20T13:35:27.870Z"},{"id":"14f6ce8b-f15e-40c7-a0a3-916ab9b0292e","customerName":"Robert Taylor","customerCompany":"Local Business Solutions","customerTitle":"Owner","customerImageUrl":"https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&h=150&fit=crop&crop=face","content":"Simple to set up, even for someone not tech-savvy like me. My customers love leaving reviews and it shows on my website automatically.","rating":5,"createdAt":"2025-07-22T13:35:27.870Z"},{"id":"fb892852-b9d5-4537-856c-97c8df976759","customerName":"David Kim","customerCompany":"ShopFast","customerTitle":"Marketing Director","customerImageUrl":"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face","content":"Increased our trust signals significantly. The testimonial widgets load fast and look professional on all our product pages.","rating":5,"createdAt":"2025-07-23T13:35:27.870Z"},{"id":"140efa8d-ecee-4aae-96cb-6741053b31b6","customerName":"Anna Davis","customerCompany":"Freelance Design","customerTitle":"UX Designer","customerImageUrl":"https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=150&h=150&fit=crop&crop=face","content":"The portfolio integration is fantastic. Potential clients can see real feedback right next to my work samples.","rating":4,"createdAt":"2025-07-25T13:35:27.870Z"},{"id":"eb010c4d-2a2c-49a4-bb9f-56ce2d19c11e","customerName":"Emily Rodriguez","customerCompany":"Creative Design Studio","customerTitle":"Lead Designer","customerImageUrl":"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face","content":"Beautiful, clean interface that matches our brand perfectly. Our clients love seeing testimonials displayed so elegantly.","rating":4,"createdAt":"2025-07-26T13:35:27.870Z"},{"id":"888487f9-49c4-4249-bcfb-d1f3c923aa62","customerName":"Sophie Martinez","customerCompany":"Brand Studio Co","customerTitle":"Account Manager","customerImageUrl":"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face","content":"Client satisfaction scores went up after we started showcasing testimonials more prominently. Great ROI!","rating":4,"createdAt":"2025-07-27T13:35:27.870Z"},{"id":"99d035d0-e436-4717-b796-9d948ca46694","customerName":"James Wilson","customerCompany":"Digital Marketing Agency","customerTitle":"Creative Director","customerImageUrl":"https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face","content":"We use this for all our client projects. The white-label options and customization features are exactly what we needed.","rating":5,"createdAt":"2025-07-29T13:35:27.870Z"},{"id":"f43ce79d-2c43-4cd5-b0db-f11acad00d23","customerName":"Marcus Johnson","customerCompany":"Innovate Labs","customerTitle":"Product Manager","customerImageUrl":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face","content":"The widget integration was seamless and our conversion rates improved by 40% after adding social proof to our landing page.","rating":5,"createdAt":"2025-07-30T13:35:27.870Z"},{"id":"15e13bb6-87e2-4ee4-85cb-820053229cfb","customerName":"Rachel Green","customerCompany":"DataFlow Inc","customerTitle":"Customer Success Manager","customerImageUrl":"https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face","content":"The automated collection process saves us hours every week. Our customers actually enjoy leaving feedback now.","rating":4,"createdAt":"2025-08-01T13:35:27.870Z"},{"id":"2ce92bee-22ae-444c-81e1-ccf232712ec3","customerName":"Sarah Chen","customerCompany":"TechCorp","customerTitle":"CTO","customerImageUrl":"https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face","content":"This platform completely transformed how we collect and showcase customer feedback. The setup was incredibly smooth and the results speak for themselves!","rating":5,"createdAt":"2025-08-02T13:35:27.870Z"},{"id":"a4689e65-4f33-46d7-a381-5f385efd3bc4","customerName":"Alex Morgan","customerCompany":"CloudTech Solutions","customerTitle":"VP of Sales","customerImageUrl":"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face","content":"Our sales team loves how easy it is to collect and share customer success stories. Closing deals 30% faster now!","rating":5,"createdAt":"2025-08-04T13:35:27.870Z"},{"id":"5c4b6243-6662-4c13-a8cc-7406fc9db6e2","customerName":"Michael Brown","customerCompany":"ConsultPro","customerTitle":"Senior Consultant","customerImageUrl":"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face","content":"As a solo consultant, social proof is everything. This platform makes me look like a big agency with all the testimonials beautifully displayed.","rating":5,"createdAt":"2025-08-06T13:35:27.870Z"},{"id":"c2e69157-f696-4bc4-b754-21be990ac824","customerName":"Maria Gonzalez","customerCompany":"Tech Solutions LLC","customerTitle":"Operations Manager","customerImageUrl":"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face","content":"The customer support team is amazing. They helped us customize everything perfectly for our brand guidelines.","rating":5,"createdAt":"2025-08-07T09:35:27.870Z"},{"id":"b09b6c06-bde8-4109-a55f-70e663e87f93","customerName":"Chris Anderson","customerCompany":"NextGen Startup","customerTitle":"Founder","customerImageUrl":"https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face","content":"Just launched our product and needed social proof fast. This platform delivered exactly what we needed in record time.","rating":5,"createdAt":"2025-08-07T11:35:27.870Z"}]}'
+async>
+</script>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Group-based Widget (6-char slug)</h2>
+        <div class="debug-info">
+            Widget ID: abc123 (6 characters - group slug)<br>
+            Base URL: http://localhost:3000<br>
+            Widget Type: carousel<br>
+            <strong>This will try to load testimonials from a group</strong>
+        </div>
+        <div class="widget-container">
+            <p><strong>Group widget should appear below:</strong></p>
+            <!-- Boostfen Testimonial Widget -->
+<script 
+src="http://localhost:3000/widget/embed-v2.js" 
+data-widget-id="harmono" 
+data-widget-type="carousel"
+data-base-url="http://localhost:3000"
+data-config='{"type":"carousel","styling":{"primaryColor":"#F59E0B","backgroundColor":"#FFFFFF","textColor":"#1F2937","accentColor":"#F59E0B","fontSize":"base","fontWeight":"normal","borderRadius":8,"padding":16,"shadow":"md","border":false,"borderColor":"#E5E7EB","gap":16,"margin":0},"behavior":{"autoPlay":true,"slideInterval":4000,"displayDuration":5000,"animationType":"slide","showNavigation":true,"showDots":true,"position":"bottom-right","columns":3,"pauseOnHover":true,"clickToExpand":false,"showCloseButton":true},"id":"widget-1754694386962","testimonials":[{"id":"0d059253-c54b-4eeb-b1ad-c04739918aea","customerName":"Jennifer Lee","customerCompany":"Family Restaurant","customerTitle":"Manager","customerImageUrl":"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face","content":"Our online reputation improved dramatically. The review widgets on our website help convince people to visit our restaurant.","rating":4,"createdAt":"2025-07-19T13:35:27.870Z"},{"id":"e9578956-6c8b-4264-9889-a0490c7ec1c4","customerName":"Lisa Thompson","customerCompany":"RetailPro","customerTitle":"E-commerce Manager","customerImageUrl":"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face","content":"The analytics dashboard gives us great insights into which testimonials perform best. Really helps with our A/B testing.","rating":4,"createdAt":"2025-07-20T13:35:27.870Z"},{"id":"14f6ce8b-f15e-40c7-a0a3-916ab9b0292e","customerName":"Robert Taylor","customerCompany":"Local Business Solutions","customerTitle":"Owner","customerImageUrl":"https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&h=150&fit=crop&crop=face","content":"Simple to set up, even for someone not tech-savvy like me. My customers love leaving reviews and it shows on my website automatically.","rating":5,"createdAt":"2025-07-22T13:35:27.870Z"},{"id":"fb892852-b9d5-4537-856c-97c8df976759","customerName":"David Kim","customerCompany":"ShopFast","customerTitle":"Marketing Director","customerImageUrl":"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face","content":"Increased our trust signals significantly. The testimonial widgets load fast and look professional on all our product pages.","rating":5,"createdAt":"2025-07-23T13:35:27.870Z"},{"id":"140efa8d-ecee-4aae-96cb-6741053b31b6","customerName":"Anna Davis","customerCompany":"Freelance Design","customerTitle":"UX Designer","customerImageUrl":"https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=150&h=150&fit=crop&crop=face","content":"The portfolio integration is fantastic. Potential clients can see real feedback right next to my work samples.","rating":4,"createdAt":"2025-07-25T13:35:27.870Z"},{"id":"eb010c4d-2a2c-49a4-bb9f-56ce2d19c11e","customerName":"Emily Rodriguez","customerCompany":"Creative Design Studio","customerTitle":"Lead Designer","customerImageUrl":"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face","content":"Beautiful, clean interface that matches our brand perfectly. Our clients love seeing testimonials displayed so elegantly.","rating":4,"createdAt":"2025-07-26T13:35:27.870Z"},{"id":"888487f9-49c4-4249-bcfb-d1f3c923aa62","customerName":"Sophie Martinez","customerCompany":"Brand Studio Co","customerTitle":"Account Manager","customerImageUrl":"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face","content":"Client satisfaction scores went up after we started showcasing testimonials more prominently. Great ROI!","rating":4,"createdAt":"2025-07-27T13:35:27.870Z"},{"id":"99d035d0-e436-4717-b796-9d948ca46694","customerName":"James Wilson","customerCompany":"Digital Marketing Agency","customerTitle":"Creative Director","customerImageUrl":"https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face","content":"We use this for all our client projects. The white-label options and customization features are exactly what we needed.","rating":5,"createdAt":"2025-07-29T13:35:27.870Z"},{"id":"f43ce79d-2c43-4cd5-b0db-f11acad00d23","customerName":"Marcus Johnson","customerCompany":"Innovate Labs","customerTitle":"Product Manager","customerImageUrl":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face","content":"The widget integration was seamless and our conversion rates improved by 40% after adding social proof to our landing page.","rating":5,"createdAt":"2025-07-30T13:35:27.870Z"},{"id":"15e13bb6-87e2-4ee4-85cb-820053229cfb","customerName":"Rachel Green","customerCompany":"DataFlow Inc","customerTitle":"Customer Success Manager","customerImageUrl":"https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face","content":"The automated collection process saves us hours every week. Our customers actually enjoy leaving feedback now.","rating":4,"createdAt":"2025-08-01T13:35:27.870Z"},{"id":"2ce92bee-22ae-444c-81e1-ccf232712ec3","customerName":"Sarah Chen","customerCompany":"TechCorp","customerTitle":"CTO","customerImageUrl":"https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face","content":"This platform completely transformed how we collect and showcase customer feedback. The setup was incredibly smooth and the results speak for themselves!","rating":5,"createdAt":"2025-08-02T13:35:27.870Z"},{"id":"a4689e65-4f33-46d7-a381-5f385efd3bc4","customerName":"Alex Morgan","customerCompany":"CloudTech Solutions","customerTitle":"VP of Sales","customerImageUrl":"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face","content":"Our sales team loves how easy it is to collect and share customer success stories. Closing deals 30% faster now!","rating":5,"createdAt":"2025-08-04T13:35:27.870Z"},{"id":"5c4b6243-6662-4c13-a8cc-7406fc9db6e2","customerName":"Michael Brown","customerCompany":"ConsultPro","customerTitle":"Senior Consultant","customerImageUrl":"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face","content":"As a solo consultant, social proof is everything. This platform makes me look like a big agency with all the testimonials beautifully displayed.","rating":5,"createdAt":"2025-08-06T13:35:27.870Z"},{"id":"c2e69157-f696-4bc4-b754-21be990ac824","customerName":"Maria Gonzalez","customerCompany":"Tech Solutions LLC","customerTitle":"Operations Manager","customerImageUrl":"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face","content":"The customer support team is amazing. They helped us customize everything perfectly for our brand guidelines.","rating":5,"createdAt":"2025-08-07T09:35:27.870Z"},{"id":"b09b6c06-bde8-4109-a55f-70e663e87f93","customerName":"Chris Anderson","customerCompany":"NextGen Startup","customerTitle":"Founder","customerImageUrl":"https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face","content":"Just launched our product and needed social proof fast. This platform delivered exactly what we needed in record time.","rating":5,"createdAt":"2025-08-07T11:35:27.870Z"}]}'
+async>
+</script>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Individual Testimonial Widget (6-char slug)</h2>
+        <div class="debug-info">
+            Widget ID: xyz789 (6 characters - testimonial slug)<br>
+            Base URL: http://localhost:3000<br>
+            Widget Type: carousel<br>
+            <strong>This will try to load a single testimonial</strong>
+        </div>
+        <div class="widget-container">
+            <p><strong>Individual testimonial widget should appear below:</strong></p>
+            <!-- Replace 'xyz789' with an actual testimonial slug from your database -->
+            <script src="http://localhost:3000/widget/embed-v2.js" data-widget-id="xyz789" data-widget-type="carousel"
+                data-base-url="http://localhost:3000" async>
+                </script>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Project-based Widget (Long slug)</h2>
+        <div class="debug-info">
+            Widget ID: test-project-slug (longer than 6 chars - project slug)<br>
+            Base URL: http://localhost:3000<br>
+            Widget Type: grid<br>
+            <strong>This will try to load all testimonials from a project</strong>
+        </div>
+        <div class="widget-container">
+            <p><strong>Project widget should appear below:</strong></p>
+            <!-- Replace 'test-project-slug' with an actual publicSlug from your database -->
+            <script src="http://localhost:3000/widget/embed-v2.js" data-widget-id="test-project-slug"
+                data-widget-type="grid" data-base-url="http://localhost:3000" async>
+                </script>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Debug Information</h2>
+        <div class="debug-info">
+            <strong>Instructions:</strong><br>
+            1. Make sure your Next.js app is running on http://localhost:3000<br>
+            2. Test 1 should work immediately (uses embedded config)<br>
+            3. For Tests 2-4, replace the widget IDs with actual slugs from your database<br>
+            4. Open browser dev tools to see console logs<br>
+            5. Check Network tab to see if API calls are successful<br><br>
+
+            <strong>Widget ID Types:</strong><br>
+            - 6 characters: Group slug or individual testimonial slug<br>
+            - Longer: Project public slug<br>
+            - With data-config: Uses embedded configuration (from widget builder)<br><br>
+
+            <strong>To create test data, run this in your database:</strong><br>
+            <code>
+            -- Create a test project with publicSlug<br>
+            INSERT INTO projects (id, user_id, name, public_slug, is_public, embed_code)<br>
+            VALUES ('test-project-id', 'your-user-id', 'Test Project', 'test-project-slug', true, 'test-embed');<br><br>
+            
+            -- Create a test group<br>
+            INSERT INTO groups (id, project_id, slug, name)<br>
+            VALUES ('test-group-id', 'test-project-id', 'abc123', 'Test Group');<br><br>
+            
+            -- Add test testimonials<br>
+            INSERT INTO testimonials (id, project_id, group_id, slug, customer_name, customer_email, content, rating, status)<br>
+            VALUES <br>
+            ('test-testimonial-1', 'test-project-id', 'test-group-id', 'xyz789', 'John Doe', 'john@example.com', 'This is an amazing product!', 5, 'approved'),<br>
+            ('test-testimonial-2', 'test-project-id', NULL, 'test2', 'Jane Smith', 'jane@example.com', 'Great service!', 4, 'approved');<br>
+            </code>
+        </div>
+
+        <div id="debug-output"></div>
+    </div>
+
+    <script>
+        // Debug script to help troubleshoot
+        console.log('Test page loaded');
+
+        // Check if scripts are loading
+        window.addEventListener('load', function () {
+            console.log('Page fully loaded');
+
+            // Look for widget containers
+            const widgets = document.querySelectorAll('[data-boostfen-widget]');
+            console.log('Found widget containers:', widgets.length);
+
+            widgets.forEach((widget, index) => {
+                console.log(`Widget ${index + 1}:`, {
+                    id: widget.getAttribute('data-boostfen-widget'),
+                    type: widget.getAttribute('data-widget-type'),
+                    content: widget.innerHTML.substring(0, 100) + '...'
+                });
+            });
+        });
+
+        // Listen for any errors
+        window.addEventListener('error', function (e) {
+            console.error('Page error:', e.error);
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.innerHTML += `<div class="error">Error: ${e.message} at ${e.filename}:${e.lineno}</div>`;
+        });
+
+        // Test API endpoints manually
+        setTimeout(function () {
+            console.log('Testing API endpoints...');
+
+            // Test different widget ID types
+            const testIds = ['abc123', 'xyz789', 'test-project-slug'];
+
+            testIds.forEach(widgetId => {
+                fetch(`http://localhost:3000/api/widget/${widgetId}`)
+                    .then(response => {
+                        console.log(`API Test ${widgetId}:`, response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`API Data ${widgetId}:`, data);
+                        const debugOutput = document.getElementById('debug-output');
+                        debugOutput.innerHTML += `<div class="debug-info">API Test ${widgetId}: ${JSON.stringify(data, null, 2)}</div>`;
+                    })
+                    .catch(error => {
+                        console.error(`API Error ${widgetId}:`, error);
+                        const debugOutput = document.getElementById('debug-output');
+                        debugOutput.innerHTML += `<div class="error">API Error ${widgetId}: ${error.message}</div>`;
+                    });
+            });
+        }, 2000);
+    </script>
+</body>
+
+</html>

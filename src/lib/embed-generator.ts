@@ -1,7 +1,33 @@
 import { WidgetConfig } from "@/types/widget"
 
 export function generateEmbedCode(config: WidgetConfig, baseUrl?: string, projectSlug?: string): string {
-  return generateShadowDOMEmbedCode(config, baseUrl, projectSlug)
+  return generateSelfContainedEmbedCode(config, baseUrl, projectSlug)
+}
+
+export function generateSelfContainedEmbedCode(config: WidgetConfig, baseUrl?: string, projectSlug?: string): string {
+  const siteUrl = baseUrl || process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://yoursite.com')
+  
+  // For group-based or individual testimonial widgets, use the selected testimonials to determine the widget ID
+  let widgetId: string
+  
+  if (config.testimonials && config.testimonials.length > 0) {
+    // If we have selected testimonials, we need to create a widget ID based on them
+    // This could be a group slug or individual testimonial slugs
+    // For now, we'll use the projectSlug as the fallback
+    widgetId = projectSlug || config.id
+  } else {
+    widgetId = projectSlug || config.id
+  }
+
+  return `<!-- Boostfen Testimonial Widget -->
+<script 
+  src="${siteUrl}/widget/embed-v2.js" 
+  data-widget-id="${widgetId}" 
+  data-widget-type="${config.type}"
+  data-base-url="${siteUrl}"
+  data-config='${JSON.stringify(config).replace(/'/g, '&apos;')}'
+  async>
+</script>`
 }
 
 export function generateShadowDOMEmbedCode(config: WidgetConfig, baseUrl?: string, projectSlug?: string): string {
